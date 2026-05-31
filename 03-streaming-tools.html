@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Myna 演示 - 实时流式输出</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #faf9f7;
+      --surface: #ffffff;
+      --surface2: #f4f2ee;
+      --surface3: #ebe8e2;
+      --text: #1a1916;
+      --text-2: #44423d;
+      --text-dim: #87847d;
+      --text-faint: #b8b4ab;
+      --border: #e8e4dc;
+      --border-strong: #d6d1c5;
+      --accent: #2d6a4f;
+      --accent-hover: #1f4c38;
+      --accent-soft: #e8f0eb;
+      --accent-glow: rgba(45, 106, 79, 0.18);
+      --amber: #d97706;
+      --amber-soft: #fef3e6;
+      --danger: #c44545;
+      --success: #2d8e5f;
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 2px rgba(60, 50, 30, 0.04);
+      --shadow: 0 2px 6px rgba(60, 50, 30, 0.06), 0 1px 2px rgba(60, 50, 30, 0.04);
+      --shadow-lg: 0 8px 24px rgba(60, 50, 30, 0.08), 0 2px 6px rgba(60, 50, 30, 0.04);
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .demo-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .demo-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .demo-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .demo-header p {
+      font-size: 16px;
+      color: var(--text-dim);
+    }
+
+    .replay-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .replay-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .replay-btn:hover { background: var(--accent-hover); }
+    .replay-btn:disabled { opacity: 0.5; cursor: default; }
+    .replay-btn svg { width: 16px; height: 16px; }
+
+    .chat-window {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: var(--surface2);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-header-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--success));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .chat-header-title h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .chat-header-title p {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .chat-messages {
+      padding: 24px;
+      min-height: 620px;
+    }
+
+    .message {
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    /* 渐入动画 */
+    .fade-in {
+      animation: fadeInUp 0.4s ease both;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: white;
+    }
+
+    .message.user .message-avatar {
+      background: linear-gradient(135deg, #4a7c59, #2d6a4f);
+    }
+
+    .message.agent .message-avatar {
+      background: linear-gradient(135deg, var(--accent), var(--success));
+    }
+
+    .message-content {
+      flex: 1;
+      max-width: 78%;
+    }
+
+    .message.user .message-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .message.user .message-header {
+      flex-direction: row-reverse;
+    }
+
+    .message-sender {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .message-time {
+      color: var(--text-faint);
+      font-size: 12px;
+    }
+
+    .message-bubble {
+      background: var(--surface2);
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .message.user .message-bubble {
+      background: var(--accent);
+      color: white;
+    }
+
+    .thinking-card {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .thinking-dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .thinking-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+    .thinking-dots span:nth-child(2) { animation-delay: 0.18s; }
+    .thinking-dots span:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    .stream-text {
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .stream-text + .stream-text { margin-top: 6px; }
+
+    /* 打字光标 */
+    .cursor::after {
+      content: '▋';
+      color: var(--accent);
+      animation: blink 1s step-end infinite;
+      margin-left: 1px;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .tool-call-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-top: 12px;
+    }
+
+    .tool-call-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .tool-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tool-icon svg { width: 14px; height: 14px; }
+
+    .tool-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      flex: 1;
+      font-family: var(--font-mono);
+    }
+
+    .tool-status {
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tool-status svg { width: 13px; height: 13px; }
+    .tool-status.running { background: var(--amber-soft); color: var(--amber); }
+    .tool-status.done { background: var(--accent-soft); color: var(--success); }
+    .spin-icon { animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .tool-args {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+    }
+
+    .tool-result {
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--text-2);
+      line-height: 1.5;
+      overflow-x: auto;
+      border-left: 3px solid var(--success);
+      white-space: pre;
+    }
+
+    .analysis-line {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 12px 0 4px;
+      font-weight: 600;
+    }
+    .analysis-line svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+    .inline-warn { color: var(--amber); display: inline-flex; vertical-align: -3px; }
+    .inline-warn svg { width: 15px; height: 15px; }
+
+    .feature-highlight {
+      background: var(--amber-soft);
+      border: 1px solid var(--amber);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-top: 32px;
+      text-align: center;
+    }
+    .feature-highlight h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+    .feature-highlight p {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .demo-container { padding: 20px 12px; }
+      .demo-header h1 { font-size: 24px; }
+      .chat-messages { padding: 16px; }
+      .message-content { max-width: 85%; }
+      .message-bubble { font-size: 13px; padding: 10px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>实时流式输出</h1>
+      <p>工具调用过程全程可见，不是黑盒</p>
+    </div>
+
+    <div class="replay-bar">
+      <button class="replay-btn" id="replayBtn" onclick="play()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        <span id="replayLabel">重新播放</span>
+      </button>
+    </div>
+
+    <div class="chat-window">
+      <div class="chat-header">
+        <div class="chat-header-icon">M</div>
+        <div class="chat-header-title">
+          <h2>开发协作群</h2>
+          <p>实时查看 AI 的工作过程</p>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="messages"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== SVG 图标 =====
+    const IC = {
+      terminal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+      spin: '<svg class="spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>',
+      search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+      bulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>',
+      warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>',
+    };
+
+    const messages = document.getElementById('messages');
+    const replayBtn = document.getElementById('replayBtn');
+    const replayLabel = document.getElementById('replayLabel');
+
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    let runToken = 0;
+
+    function scrollDown() {
+      messages.scrollTop = messages.scrollHeight;
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    // 逐字打字
+    async function typeInto(el, text, token, speed = 38) {
+      el.classList.add('cursor');
+      for (let i = 0; i < text.length; i++) {
+        if (token !== runToken) return;
+        el.innerHTML = text.slice(0, i + 1).replace(/\n/g, '<br>');
+        scrollDown();
+        await sleep(speed);
+      }
+      el.classList.remove('cursor');
+    }
+
+    // 直接渲染 HTML（用于分析结论这种富文本，逐段淡入）
+    function appendHTML(parent, html) {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      div.classList.add('fade-in');
+      parent.appendChild(div);
+      scrollDown();
+      return div;
+    }
+
+    async function play() {
+      const token = ++runToken;
+      replayBtn.disabled = true;
+      replayLabel.textContent = '播放中…';
+      messages.innerHTML = '';
+
+      // 1) 用户消息渐入
+      await sleep(400);
+      if (token !== runToken) return;
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message user fade-in';
+      userMsg.innerHTML = `
+        <div class="message-avatar">我</div>
+        <div class="message-content">
+          <div class="message-header">
+            <span class="message-sender">用户</span>
+            <span class="message-time">15:42</span>
+          </div>
+          <div class="message-bubble">帮我分析一下服务器的磁盘使用情况，找出占用最大的目录</div>
+        </div>`;
+      messages.appendChild(userMsg);
+      scrollDown();
+
+      // 2) AI 思考动画
+      await sleep(900);
+      if (token !== runToken) return;
+      const agentMsg = document.createElement('div');
+      agentMsg.className = 'message agent fade-in';
+      agentMsg.innerHTML = `
+        <div class="message-avatar">AI</div>
+        <div class="message-content">
+          <div class="message-header">
+            <span class="message-sender">系统管理员</span>
+            <span class="message-time">15:42</span>
+          </div>
+          <div class="message-bubble" id="agentBubble">
+            <div class="thinking-card" id="thinking">
+              <div class="thinking-dots"><span></span><span></span><span></span></div>
+              <span>正在思考…</span>
+            </div>
+          </div>
+        </div>`;
+      messages.appendChild(agentMsg);
+      scrollDown();
+      const bubble = agentMsg.querySelector('#agentBubble');
+
+      await sleep(1600);
+      if (token !== runToken) return;
+      bubble.innerHTML = ''; // 移除思考动画
+
+      // 3) 第一段文字逐字打出
+      const t1 = document.createElement('div');
+      t1.className = 'stream-text';
+      bubble.appendChild(t1);
+      await typeInto(t1, '好的，我来帮你分析磁盘使用情况。先看整体分区占用：', token);
+      if (token !== runToken) return;
+
+      // 4) 工具卡片1 —— 出现 + 执行中 → 完成 + 结果
+      await sleep(400);
+      const card1 = appendHTML(bubble, `
+        <div class="tool-call-header">
+          <div class="tool-icon">${IC.terminal}</div>
+          <span class="tool-name">terminal</span>
+          <span class="tool-status running">${IC.spin} 执行中</span>
+        </div>
+        <div class="tool-args">$ df -h</div>`);
+      card1.className = 'tool-call-card fade-in';
+      await sleep(1400);
+      if (token !== runToken) return;
+      card1.querySelector('.tool-status').className = 'tool-status done';
+      card1.querySelector('.tool-status').innerHTML = `${IC.check} 完成`;
+      const res1 = document.createElement('div');
+      res1.className = 'tool-result';
+      res1.textContent =
+`Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        50G   38G   10G  79% /
+/dev/sdb1       100G   85G   12G  88% /data
+tmpfs           7.8G  1.2G  6.6G  16% /dev/shm`;
+      card1.appendChild(res1);
+      scrollDown();
+
+      // 5) 第二段文字
+      await sleep(700);
+      if (token !== runToken) return;
+      const t2 = document.createElement('div');
+      t2.className = 'stream-text';
+      bubble.appendChild(t2);
+      await typeInto(t2, '发现 /data 分区使用率已达 88%，继续往下钻取，看看具体哪些目录占用最大：', token);
+      if (token !== runToken) return;
+
+      // 6) 工具卡片2
+      await sleep(400);
+      const card2 = appendHTML(bubble, `
+        <div class="tool-call-header">
+          <div class="tool-icon">${IC.terminal}</div>
+          <span class="tool-name">terminal</span>
+          <span class="tool-status running">${IC.spin} 执行中</span>
+        </div>
+        <div class="tool-args">$ du -sh /data/* | sort -rh | head -5</div>`);
+      card2.className = 'tool-call-card fade-in';
+      await sleep(1500);
+      if (token !== runToken) return;
+      card2.querySelector('.tool-status').className = 'tool-status done';
+      card2.querySelector('.tool-status').innerHTML = `${IC.check} 完成`;
+      const res2 = document.createElement('div');
+      res2.className = 'tool-result';
+      res2.textContent =
+`45G     /data/logs
+22G     /data/backups
+12G     /data/docker
+4.2G    /data/uploads
+1.8G    /data/cache`;
+      card2.appendChild(res2);
+      scrollDown();
+
+      // 7) 最终分析结论（逐段淡入）
+      await sleep(800);
+      if (token !== runToken) return;
+      const concl = document.createElement('div');
+      concl.className = 'stream-text';
+      bubble.appendChild(concl);
+
+      appendHTML(concl, `<strong>分析结果：</strong>`);
+      await sleep(450); if (token !== runToken) return;
+      appendHTML(concl, `
+        <div class="analysis-line">${IC.chart}磁盘使用情况</div>
+        • 根分区 (/) 使用 79% (38G/50G)<br>
+        • 数据分区 (/data) 使用 88% (85G/100G) <span class="inline-warn">${IC.warn}</span>`);
+      await sleep(600); if (token !== runToken) return;
+      appendHTML(concl, `
+        <div class="analysis-line">${IC.search}/data 目录占用 TOP 5</div>
+        1. <strong>/data/logs</strong> — 45G（日志文件）<br>
+        2. <strong>/data/backups</strong> — 22G（备份文件）<br>
+        3. <strong>/data/docker</strong> — 12G（Docker 镜像）<br>
+        4. /data/uploads — 4.2G<br>
+        5. /data/cache — 1.8G`);
+      await sleep(600); if (token !== runToken) return;
+      appendHTML(concl, `
+        <div class="analysis-line">${IC.bulb}建议</div>
+        • 清理 /data/logs 中的旧日志（可释放约 45G）<br>
+        • 检查 /data/backups 是否有过期备份可删除<br>
+        • 运行 <code>docker system prune</code> 清理未使用的镜像`);
+
+      // 8) 核心特性说明卡
+      await sleep(600);
+      if (token !== runToken) return;
+      const feat = document.createElement('div');
+      feat.className = 'feature-highlight fade-in';
+      feat.innerHTML = `
+        <h3>核心特性</h3>
+        <p>
+          <strong>实时流式输出</strong> — 每个工具调用都实时显示命令、执行状态、返回结果<br>
+          <strong>按时序穿插</strong> — 文本和工具调用按真实执行顺序展示，不是事后拼接<br>
+          <strong>全程透明</strong> — 看得见 AI 在做什么，不是黑盒
+        </p>`;
+      messages.appendChild(feat);
+      scrollDown();
+
+      replayBtn.disabled = false;
+      replayLabel.textContent = '重新播放';
+    }
+
+    // 页面加载后自动播放
+    window.addEventListener('load', () => setTimeout(play, 300));
+  </script>
+</body>
+</html>
