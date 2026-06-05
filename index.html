@@ -291,11 +291,11 @@ function goPage(id){document.getElementById(id).scrollIntoView({behavior:'smooth
 
 // ═══ CHAT DEMO ═══
 const script=[
-  {agent:'user',name:'我',cls:'user',text:'我要做一个产品官网改版。@产品经理 拆卖点，@前端 做页面，@测试员 复测，@运维 检查部署。'},
+  {agent:'user',name:'我',cls:'user',text:'产品官网改版。@产品经理 拆卖点，@前端 做页面，@测试员 复测，@运维 部署。'},
   {agent:'pm',name:'产品经理',cls:'pm',tag:'分析中',tagBg:'var(--cyan-s)',tagFg:'var(--cyan)',text:'需求拆解完成。3大模块、5个核心卖点、2类用户画像。交接前端。',handoff:{from:'PM',to:'FE',ctx:'需求文档 + 页面结构 + 卖点优先级'}},
-  {agent:'fe',name:'前端工程师',cls:'fe',tag:'编码中',tagBg:'var(--green-s)',tagFg:'var(--green)',text:'实现完成。Hero + 特性网格 + CTA，桌面移动端同步。',tool:{title:'终端执行',lines:[{t:'cmd',s:'$ git checkout -b feature/redesign'},{t:'ok',s:'✓ branch created'},{t:'cmd',s:'$ npm run build'},{t:'ok',s:'✓ Build 3.2s'},{t:'cmd',s:'$ browser.open("localhost:3456")'},{t:'ok',s:'✓ screenshot captured'}]},handoff:{from:'FE',to:'QA',ctx:'代码改动 + 构建产物 + 截图'}},
-  {agent:'qa',name:'测试员',cls:'qa',tag:'测试中',tagBg:'var(--rose-s)',tagFg:'var(--rose)',text:'验收完成。12项测试全部通过，1项自动修复。',tool:{title:'测试执行',lines:[{t:'info',s:'▶ 桌面: Hero ✓ 特性 ✓'},{t:'info',s:'▶ 移动端: 响应式 ✓'},{t:'err',s:'✗ CTA hover无反馈 → 自动修复'},{t:'ok',s:'✓ 12/12 通过'}]},handoff:{from:'QA',to:'OPS',ctx:'测试报告 + 修复补丁 + 验收结论'}},
-  {agent:'ops',name:'运维',cls:'ops',tag:'部署中',tagBg:'var(--violet-s)',tagFg:'var(--violet)',text:'部署完成。服务正常，页面可访问，SSL/CDN 已确认。',tool:{title:'部署验证',lines:[{t:'cmd',s:'$ kubectl get pods'},{t:'ok',s:'✓ 3/3 running'},{t:'cmd',s:'$ curl https://myna.app'},{t:'ok',s:'✓ HTTP 200 · 部署完成'}]}}
+  {agent:'fe',name:'前端工程师',cls:'fe',tag:'编码中',tagBg:'var(--green-s)',tagFg:'var(--green)',text:'实现完成。Hero + 特性网格 + CTA，桌面移动端同步。',tool:{title:'终端执行',lines:[{t:'cmd',s:'$ npm run build'},{t:'ok',s:'✓ Build 3.2s'},{t:'ok',s:'✓ screenshot captured'}]},handoff:{from:'FE',to:'QA',ctx:'代码改动 + 构建产物 + 截图'}},
+  {agent:'qa',name:'测试员',cls:'qa',tag:'测试中',tagBg:'var(--rose-s)',tagFg:'var(--rose)',text:'验收完成。12项测试全部通过，1项自动修复。',tool:{title:'测试执行',lines:[{t:'info',s:'▶ 桌面 ✓ 移动端 ✓'},{t:'err',s:'✗ CTA hover → 自动修复'},{t:'ok',s:'✓ 12/12 通过'}]},handoff:{from:'QA',to:'OPS',ctx:'测试报告 + 修复补丁 + 验收结论'}},
+  {agent:'ops',name:'运维',cls:'ops',tag:'部署中',tagBg:'var(--violet-s)',tagFg:'var(--violet)',text:'部署完成。服务正常，SSL/CDN 已确认。',tool:{title:'部署验证',lines:[{t:'cmd',s:'$ kubectl get pods'},{t:'ok',s:'✓ 3/3 running'},{t:'ok',s:'✓ HTTP 200 · 部署完成'}]}}
 ];
 
 let runToken=0, userScrolled=false;
