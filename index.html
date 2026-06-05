@@ -66,9 +66,9 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 @keyframes pFlow{0%{left:-6px;opacity:0}20%{opacity:1}100%{left:100%;opacity:0}}
 
 /* Chat: messages grow upward, always visible from bottom */
-.chat{flex:1;padding:14px 16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--sf3) transparent;display:flex;flex-direction:column;justify-content:flex-end}
+.chat{flex:1;padding:14px 16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--sf3) transparent}
 .chat::-webkit-scrollbar{width:4px}.chat::-webkit-scrollbar-track{background:transparent}.chat::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:4px}
-.chat-inner{display:flex;flex-direction:column;gap:8px;flex-shrink:0;min-height:min-content}
+.chat-inner{display:flex;flex-direction:column;gap:8px}
 .chat-msg{display:flex;gap:10px;opacity:0;transform:translateY(14px) scale(.97);transition:.5s cubic-bezier(.22,1,.36,1)}
 .chat-msg.in{opacity:1;transform:translateY(0) scale(1)}
 .msg-av{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;font-size:10px;font-weight:800;position:relative;border:1px solid var(--bd);background:var(--sf2);transition:.3s}
@@ -302,7 +302,7 @@ let runToken=0, userScrolled=false;
 const chatEl=$('#chatArea');
 chatEl.addEventListener('scroll',()=>{userScrolled=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight>40});
 
-function toBottom(){if(!userScrolled)chatEl.scrollTop=chatEl.scrollHeight}
+function toBottom(){if(!userScrolled){chatEl.scrollTop=chatEl.scrollHeight}}
 
 function mkMsg(item,i){
   const el=document.createElement('div');el.className='chat-msg';el.dataset.idx=i;
