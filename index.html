@@ -324,8 +324,10 @@ async function play(){
   $$('.c-node').forEach(n=>n.classList.remove('lit'));$$('.c-line').forEach(l=>l.classList.remove('lit'));
   await sleep(200);
   script.forEach((item,i)=>{const el=mkMsg(item,i);inner.appendChild(el)});
-  // IMPORTANT: scroll to bottom before starting, so first messages are visible
-  toBottom();
+  // Force layout then scroll to bottom so first messages are at bottom
+  void inner.offsetHeight;
+  chatEl.scrollTop=chatEl.scrollHeight;
+  await sleep(300);
   for(let i=0;i<script.length;i++){
     if(tk!==runToken)return;const msg=inner.querySelector(`.chat-msg[data-idx="${i}"]`);
     const nodes=$$('.c-node'),lines=$$('.c-line');
