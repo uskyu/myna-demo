@@ -3,284 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Myna — AI 群聊协作，接力干活</title>
-<meta name="description" content="多个AI智能体在一个群聊房间接力完成任务。@分工、自动交接、工具可见、产物沉淀。">
+<title>Myna — AI 群聊接力协作</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#09090b;--sf:#131316;--sf2:#1a1a1e;--sf3:#222226;
-  --tx:#fafaf9;--tx2:#d4d4d8;--dim:#71717a;
-  --bd:#2a2a2f;
-  --cyan:#22d3ee;--cyan2:#06b6d4;--cyan-soft:rgba(34,211,238,.1);
-  --green:#4ade80;--green-soft:rgba(74,222,128,.1);
-  --amber:#fbbf24;--amber-soft:rgba(251,191,36,.1);
-  --rose:#fb7185;--rose-soft:rgba(251,113,133,.1);
-  --violet:#a78bfa;--violet-soft:rgba(167,139,250,.1);
-  --r:16px;--mono:"SF Mono","JetBrains Mono","Fira Code",Consolas,monospace;
-  --font:-apple-system,BlinkMacSystemFont,"Inter","SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --tx:#fafaf9;--tx2:#d4d4d8;--dim:#71717a;--bd:#2a2a2f;
+  --cyan:#22d3ee;--cyan2:#06b6d4;--cyan-s:rgba(34,211,238,.1);
+  --green:#4ade80;--green-s:rgba(74,222,128,.1);
+  --amber:#fbbf24;--amber-s:rgba(251,191,36,.1);
+  --rose:#fb7185;--rose-s:rgba(251,113,133,.1);
+  --violet:#a78bfa;--violet-s:rgba(167,139,250,.1);
+  --mono:"SF Mono","JetBrains Mono","Fira Code",Consolas,monospace;
+  --font:-apple-system,BlinkMacSystemFont,"Inter","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
 }
 html{scroll-behavior:smooth;scroll-snap-type:y mandatory;background:var(--bg)}
 body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-
-/* ── BG ── */
 .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 80% 60% at 15% 10%,rgba(34,211,238,.06),transparent),
-    radial-gradient(ellipse 60% 50% at 85% 20%,rgba(167,139,250,.04),transparent),
-    var(--bg)}
+  background:radial-gradient(ellipse 80% 60% at 15% 10%,rgba(34,211,238,.06),transparent),radial-gradient(ellipse 60% 50% at 85% 20%,rgba(167,139,250,.04),transparent),var(--bg)}
 .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.1;
-  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:48px 48px}
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:48px 48px}
 .scanline{position:fixed;left:0;right:0;height:2px;z-index:1;pointer-events:none;
-  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.2;
-  animation:scanMove 4s linear infinite}
-@keyframes scanMove{0%{top:-2px}100%{top:100vh}}
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.2;animation:scanM 4s linear infinite}
+@keyframes scanM{0%{top:-2px}100%{top:100vh}}
+.page{position:relative;z-index:2;min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column}
 
-/* ── Pages ── */
-.page{position:relative;z-index:2;min-height:100vh;scroll-snap-align:start;
-  display:flex;flex-direction:column;position:relative}
-
-/* ── Top Bar ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;
-  padding:14px clamp(16px,3vw,40px);backdrop-filter:blur(16px);
-  background:rgba(9,9,11,.65);border-bottom:1px solid var(--bd);z-index:10;flex:0 0 auto}
+/* Topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px clamp(16px,3vw,40px);backdrop-filter:blur(16px);background:rgba(9,9,11,.65);border-bottom:1px solid var(--bd);z-index:10;flex:0 0 auto}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:17px}
-.brand-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--cyan),var(--violet));
-  display:grid;place-items:center;box-shadow:0 0 20px rgba(34,211,238,.25)}
+.brand-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;box-shadow:0 0 20px rgba(34,211,238,.25)}
 .brand-icon svg{width:16px;height:16px;fill:var(--bg)}
-.brand .repo{font-size:12px;color:var(--dim);font-weight:600;margin-left:4px;
-  padding:3px 8px;border:1px solid var(--bd);border-radius:6px;font-family:var(--mono)}
+.brand .repo{font-size:12px;color:var(--dim);font-weight:600;margin-left:4px;padding:3px 8px;border:1px solid var(--bd);border-radius:6px;font-family:var(--mono)}
 .topbar-right{display:flex;align-items:center;gap:8px}
-.page-indicator{font-size:11px;font-family:var(--mono);color:var(--dim);letter-spacing:.05em}
-.btn-replay{padding:6px 12px;border-radius:999px;border:1px solid var(--bd);background:var(--sf2);
-  color:var(--tx2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
-.btn-replay:hover{border-color:var(--cyan);color:var(--tx)}
-.btn-replay svg{width:13px;height:13px}
+.page-ind{font-size:11px;font-family:var(--mono);color:var(--dim);letter-spacing:.05em}
+.btn-sm{padding:6px 12px;border-radius:999px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
+.btn-sm:hover{border-color:var(--cyan);color:var(--tx)}
+.btn-sm svg{width:13px;height:13px}
 
-/* ── Next Button ── */
-.next-btn{position:absolute;bottom:24px;right:clamp(20px,4vw,48px);z-index:20;
-  display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
-  border:1px solid var(--bd);background:rgba(26,26,30,.85);backdrop-filter:blur(12px);
-  color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;transition:.3s;
-  box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.next-btn:hover{border-color:var(--cyan);color:var(--tx);transform:translateY(-2px);
-  box-shadow:0 12px 40px rgba(0,0,0,.5)}
+/* Next btn */
+.next-btn{position:absolute;bottom:24px;right:clamp(20px,4vw,48px);z-index:20;display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;border:1px solid var(--bd);background:rgba(26,26,30,.85);backdrop-filter:blur(12px);color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;transition:.3s;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.next-btn:hover{border-color:var(--cyan);color:var(--tx);transform:translateY(-2px)}
 .next-btn svg{width:16px;height:16px;transition:.3s}
 .next-btn:hover svg{transform:translateY(2px)}
-.next-btn .key{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--sf3);
-  color:var(--dim);font-family:var(--mono);margin-left:4px}
+.next-btn .key{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--sf3);color:var(--dim);font-family:var(--mono);margin-left:4px}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PAGE 1: 产品发布作战室
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.demo-page .stage-wrap{flex:1;display:flex;align-items:center;justify-content:center;
-  padding:20px clamp(16px,4vw,48px) 64px}
-.stage{width:100%;max-width:860px;background:var(--sf);border:1px solid var(--bd);
-  border-radius:24px;overflow:hidden;
-  box-shadow:0 32px 100px rgba(0,0,0,.55),0 0 0 1px rgba(34,211,238,.04);
-  position:relative;display:flex;flex-direction:column;max-height:calc(100vh - 100px)}
-.stage::before{content:"";position:absolute;inset:-1px;border-radius:24px;pointer-events:none;
-  background:linear-gradient(135deg,rgba(34,211,238,.18),transparent 40%,rgba(167,139,250,.12));
-  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:1px}
-.stage-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;
-  border-bottom:1px solid var(--bd);background:rgba(9,9,11,.5);flex:0 0 auto}
+/* ── PAGE 1: CHAT DEMO ── */
+.demo-page .stage-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:20px clamp(16px,4vw,48px) 64px}
+.stage{width:100%;max-width:860px;background:var(--sf);border:1px solid var(--bd);border-radius:24px;overflow:hidden;box-shadow:0 32px 100px rgba(0,0,0,.55),0 0 0 1px rgba(34,211,238,.04);position:relative;display:flex;flex-direction:column;max-height:calc(100vh - 100px)}
+.stage::before{content:"";position:absolute;inset:-1px;border-radius:24px;pointer-events:none;background:linear-gradient(135deg,rgba(34,211,238,.18),transparent 40%,rgba(167,139,250,.12));mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:1px}
+.stage-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:rgba(9,9,11,.5);flex:0 0 auto}
 .dots{display:flex;gap:6px}
 .dots i{width:9px;height:9px;border-radius:999px;background:var(--sf3);border:1px solid var(--bd)}
 .dots i:nth-child(1){background:rgba(251,113,133,.8)}.dots i:nth-child(2){background:rgba(251,191,36,.8)}.dots i:nth-child(3){background:rgba(74,222,128,.8)}
 .stage-title{color:var(--dim);font-size:12px;font-family:var(--mono)}
-.chain-strip{display:flex;align-items:center;gap:0;padding:10px 16px;border-bottom:1px solid var(--bd);
-  background:rgba(9,9,11,.3);flex:0 0 auto;overflow-x:auto}
-.chain-node{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:800;
-  border:1px solid var(--bd);background:var(--sf2);transition:.4s;flex:0 0 auto}
-.chain-node.lit{border-color:var(--cyan);background:var(--cyan-soft);box-shadow:0 0 18px rgba(34,211,238,.2);
-  animation:nodeGlow 1.5s ease-in-out infinite alternate}
-@keyframes nodeGlow{0%{box-shadow:0 0 10px rgba(34,211,238,.12)}100%{box-shadow:0 0 24px rgba(34,211,238,.25)}}
-.chain-line{width:24px;height:2px;background:var(--bd);position:relative;overflow:hidden;transition:.4s;flex:0 0 auto}
-.chain-line.lit{background:linear-gradient(90deg,var(--cyan),var(--violet))}
-.chain-line.lit::after{content:"";position:absolute;top:-1px;width:6px;height:4px;border-radius:2px;
-  background:var(--cyan);animation:particleFlow .7s linear infinite}
-@keyframes particleFlow{0%{left:-6px;opacity:0}20%{opacity:1}100%{left:100%;opacity:0}}
+.chain-strip{display:flex;align-items:center;gap:0;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(9,9,11,.3);flex:0 0 auto;overflow-x:auto}
+.c-node{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:800;border:1px solid var(--bd);background:var(--sf2);transition:.4s;flex:0 0 auto}
+.c-node.lit{border-color:var(--cyan);background:var(--cyan-s);box-shadow:0 0 18px rgba(34,211,238,.2);animation:nGlow 1.5s ease-in-out infinite alternate}
+@keyframes nGlow{0%{box-shadow:0 0 10px rgba(34,211,238,.12)}100%{box-shadow:0 0 24px rgba(34,211,238,.25)}}
+.c-line{width:24px;height:2px;background:var(--bd);position:relative;overflow:hidden;transition:.4s;flex:0 0 auto}
+.c-line.lit{background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.c-line.lit::after{content:"";position:absolute;top:-1px;width:6px;height:4px;border-radius:2px;background:var(--cyan);animation:pFlow .7s linear infinite}
+@keyframes pFlow{0%{left:-6px;opacity:0}20%{opacity:1}100%{left:100%;opacity:0}}
 
-/* ── Chat ── */
-.chat{flex:1;padding:14px 16px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;overflow-y:auto;
-  scrollbar-width:thin;scrollbar-color:var(--sf3) transparent}
-.chat::-webkit-scrollbar{width:4px}
-.chat::-webkit-scrollbar-track{background:transparent}
-.chat::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:4px}
-.chat-inner{display:flex;flex-direction:column;justify-content:flex-end;gap:8px}
+/* Chat: messages grow upward, always visible from bottom */
+.chat{flex:1;padding:14px 16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--sf3) transparent}
+.chat::-webkit-scrollbar{width:4px}.chat::-webkit-scrollbar-track{background:transparent}.chat::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:4px}
+.chat-inner{display:flex;flex-direction:column;gap:8px}
 .chat-msg{display:flex;gap:10px;opacity:0;transform:translateY(14px) scale(.97);transition:.5s cubic-bezier(.22,1,.36,1)}
 .chat-msg.in{opacity:1;transform:translateY(0) scale(1)}
-.msg-av{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
-  font-size:10px;font-weight:800;position:relative;border:1px solid var(--bd);background:var(--sf2);transition:.3s}
+.msg-av{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;font-size:10px;font-weight:800;position:relative;border:1px solid var(--bd);background:var(--sf2);transition:.3s}
 .msg-av.user{color:var(--bg);background:linear-gradient(135deg,var(--amber),#f59e0b);border-color:rgba(251,191,36,.3)}
 .msg-av.pm{color:var(--cyan);border-color:rgba(34,211,238,.25)}
 .msg-av.fe{color:var(--green);border-color:rgba(74,222,128,.25)}
 .msg-av.qa{color:var(--rose);border-color:rgba(251,113,133,.25)}
 .msg-av.ops{color:var(--violet);border-color:rgba(167,139,250,.25)}
-.msg-av.active-agent{animation:avPulse 1s ease-in-out infinite}
-@keyframes avPulse{0%,100%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 0 6px transparent}}
+.msg-av.pulse{animation:avP 1s ease-in-out infinite}
+@keyframes avP{0%,100%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 0 6px transparent}}
 .msg-body{flex:1;min-width:0}
 .msg-name{font-size:11px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .msg-name .tag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
-.msg-bubble{padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--bd);
-  color:var(--tx2);font-size:13px;line-height:1.65}
+.msg-bubble{padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--bd);color:var(--tx2);font-size:13px;line-height:1.65}
 .mention{color:var(--cyan);font-weight:700}
-.typing-cursor::after{content:"▊";color:var(--cyan);animation:blink .7s steps(2) infinite;font-size:12px;margin-left:2px}
+.cursor::after{content:"▊";color:var(--cyan);animation:blink .7s steps(2) infinite;font-size:12px;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
-
-/* ── Tool Panel ── */
-.tool-panel{margin-top:6px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;
-  background:rgba(9,9,11,.7);opacity:0;transform:scale(.96);transition:.4s}
+.tool-panel{margin-top:6px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:rgba(9,9,11,.7);opacity:0;transform:scale(.96);transition:.4s}
 .tool-panel.in{opacity:1;transform:scale(1)}
-.tool-head{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--bd);
-  font-size:10px;font-family:var(--mono);color:var(--dim)}
+.tool-head{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--bd);font-size:10px;font-family:var(--mono);color:var(--dim)}
 .tool-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px}
-.tool-status .spinner{width:8px;height:8px;border:1.5px solid var(--bd);border-top-color:var(--cyan);
-  border-radius:999px;animation:spin .7s linear infinite}
+.spinner{width:8px;height:8px;border:1.5px solid var(--bd);border-top-color:var(--cyan);border-radius:999px;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.tool-status .check{color:var(--green);font-weight:700}
+.tool-status .ck{color:var(--green);font-weight:700}
 .tool-output{padding:8px 10px;font-family:var(--mono);font-size:10.5px;line-height:1.75;color:var(--dim);max-height:130px;overflow-y:auto}
-.tool-output .cmd{color:var(--amber)}.tool-output .ok{color:var(--green)}
-.tool-output .info{color:var(--cyan)}.tool-output .err{color:var(--rose)}
-
-/* ── Handoff ── */
-.handoff{display:flex;align-items:center;gap:6px;padding:5px 10px;margin:3px 0;
-  border-radius:8px;background:var(--cyan-soft);border:1px solid rgba(34,211,238,.12);
-  font-size:10px;font-weight:700;color:var(--cyan);opacity:0;transform:translateX(-8px);transition:.4s}
+.tool-output .cmd{color:var(--amber)}.tool-output .ok{color:var(--green)}.tool-output .info{color:var(--cyan)}.tool-output .err{color:var(--rose)}
+.handoff{display:flex;align-items:center;gap:6px;padding:5px 10px;margin:3px 0;border-radius:8px;background:var(--cyan-s);border:1px solid rgba(34,211,238,.12);font-size:10px;font-weight:700;color:var(--cyan);opacity:0;transform:translateX(-8px);transition:.4s}
 .handoff.in{opacity:1;transform:translateX(0)}
 .handoff svg{width:12px;height:12px;flex:0 0 auto}
-.handoff .fdots{display:flex;gap:2px;flex:1}
-.handoff .fdots i{width:3px;height:3px;border-radius:999px;background:var(--cyan);opacity:.25}
-.handoff .fdots i.lit{opacity:1;animation:fdot .5s ease-in-out}
+.handoff .fd{display:flex;gap:2px;flex:1}
+.handoff .fd i{width:3px;height:3px;border-radius:999px;background:var(--cyan);opacity:.25}
+.handoff .fd i.lit{opacity:1;animation:fdot .5s ease-in-out}
 @keyframes fdot{0%{transform:scale(1)}50%{transform:scale(2)}100%{transform:scale(1)}}
 .handoff .ctx{font-weight:400;color:var(--dim)}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PAGE 2: 接力流程 (IMMERSIVE SPLIT)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.flow-page .content{flex:1;display:flex;align-items:center;justify-content:center;
-  padding:40px clamp(16px,4vw,48px) 80px;overflow:hidden}
+/* ── PAGE 2: RELAY FLOW ── */
+.flow-page .content{flex:1;display:flex;align-items:center;justify-content:center;padding:40px clamp(16px,4vw,48px) 80px;overflow:hidden}
 .flow-split{display:flex;gap:0;width:100%;max-width:1100px;height:calc(100vh - 160px);position:relative}
-.flow-left{flex:0 0 42%;display:flex;flex-direction:column;justify-content:center;
-  padding-right:32px;transform:translateX(-40px);opacity:0;transition:.8s cubic-bezier(.22,1,.36,1)}
-.flow-left.entered{transform:translateX(0);opacity:1}
+.flow-left{flex:0 0 40%;display:flex;flex-direction:column;justify-content:center;padding-right:32px;opacity:0;transform:translateX(-30px);transition:.8s cubic-bezier(.22,1,.36,1)}
+.flow-left.in{opacity:1;transform:translateX(0)}
 .flow-left h2{font-size:clamp(28px,4vw,52px);line-height:1;letter-spacing:-.04em;margin-bottom:28px}
-.kicker{color:var(--cyan);font-family:var(--mono);font-size:11px;letter-spacing:.1em;
-  text-transform:uppercase;margin-bottom:10px;font-weight:700}
+.kicker{color:var(--cyan);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-weight:700}
+.flow-right{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;transform:translateX(30px);transition:.8s cubic-bezier(.22,1,.36,1) .15s}
+.flow-right.in{opacity:1;transform:translateX(0)}
+.r-track{display:flex;flex-direction:column;gap:0;width:100%;max-width:420px}
+.r-item{display:flex;align-items:stretch;gap:0;opacity:0;transform:translateX(20px);transition:.5s cubic-bezier(.22,1,.36,1)}
+.r-item.in{opacity:1;transform:translateX(0)}
+.r-item.out{opacity:0;transform:translateX(-20px);transition:.4s}
+.r-rail{width:3px;position:relative;background:var(--bd);margin-left:22px;flex:0 0 auto}
+.r-rail .dot{position:absolute;left:-4px;width:11px;height:11px;border-radius:999px;background:var(--sf3);border:2px solid var(--bd);transition:.5s}
+.r-rail .dot.on{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.4);animation:rp 1.5s ease-in-out infinite}
+@keyframes rp{0%,100%{box-shadow:0 0 8px rgba(34,211,238,.3)}50%{box-shadow:0 0 24px rgba(34,211,238,.5)}}
+.r-rail .beam{position:absolute;left:-1px;width:5px;border-radius:3px;background:linear-gradient(180deg,var(--cyan),var(--violet));transition:.6s;height:0}
+.r-rail .beam.full{height:100%}
+.r-card{flex:1;padding:14px 16px;margin:8px 0 8px 16px;border-radius:14px;border:1px solid var(--bd);background:var(--sf);position:relative;overflow:hidden;transition:.4s}
+.r-card.on{border-color:rgba(34,211,238,.3);box-shadow:0 0 30px rgba(34,211,238,.08)}
+.r-card .sl{font-size:10px;font-family:var(--mono);color:var(--dim);margin-bottom:4px}
+.r-card h3{font-size:15px;margin-bottom:3px}.r-card p{color:var(--tx2);font-size:12.5px;line-height:1.5}
+.r-card .mb{margin-top:6px;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.02);border:1px solid var(--bd);font-size:11px;color:var(--dim);font-family:var(--mono)}
+.r-arrow{display:flex;align-items:center;padding:2px 0 2px 18px;gap:6px;opacity:0;transition:.4s .1s}
+.r-arrow.in{opacity:1}
+.r-arrow svg{width:14px;height:14px;color:var(--cyan)}
+.r-arrow span{font-size:10px;font-family:var(--mono);color:var(--cyan);font-weight:700;padding:2px 8px;border-radius:4px;background:var(--cyan-s)}
 
-.relay-track{display:flex;flex-direction:column;gap:0;width:100%;max-width:420px}
-.relay-item{display:flex;align-items:stretch;gap:0;opacity:0;transform:translateX(30px);
-  transition:.6s cubic-bezier(.22,1,.36,1)}
-.relay-item.entered{opacity:1;transform:translateX(0)}
-.relay-rail{width:3px;position:relative;background:var(--bd);margin-left:22px;flex:0 0 auto}
-.relay-rail .dot{position:absolute;left:-4px;width:11px;height:11px;border-radius:999px;
-  background:var(--sf3);border:2px solid var(--bd);transition:.5s}
-.relay-rail .dot.active{background:var(--cyan);border-color:var(--cyan);
-  box-shadow:0 0 16px rgba(34,211,238,.4);animation:relayPulse 1.5s ease-in-out infinite}
-@keyframes relayPulse{0%,100%{box-shadow:0 0 8px rgba(34,211,238,.3)}50%{box-shadow:0 0 24px rgba(34,211,238,.5)}}
-.relay-rail .beam{position:absolute;left:-1px;width:5px;border-radius:3px;
-  background:linear-gradient(180deg,var(--cyan),var(--violet));transition:.6s;height:0}
-.relay-rail .beam.full{height:100%}
-.relay-card{flex:1;padding:14px 16px;margin:8px 0 8px 16px;border-radius:14px;
-  border:1px solid var(--bd);background:var(--sf);position:relative;overflow:hidden;transition:.4s}
-.relay-card.active{border-color:rgba(34,211,238,.3);box-shadow:0 0 30px rgba(34,211,238,.08)}
-.relay-card .step-label{font-size:10px;font-family:var(--mono);color:var(--dim);margin-bottom:4px}
-.relay-card h3{font-size:15px;margin-bottom:3px;letter-spacing:-.01em}
-.relay-card p{color:var(--tx2);font-size:12.5px;line-height:1.5}
-.relay-card .mini-bubble{margin-top:6px;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.02);
-  border:1px solid var(--bd);font-size:11px;color:var(--dim);font-family:var(--mono)}
-.relay-arrow{display:flex;align-items:center;padding:2px 0 2px 18px;gap:6px;opacity:0;transition:.4s .1s}
-.relay-arrow.entered{opacity:1}
-.relay-arrow svg{width:14px;height:14px;color:var(--cyan)}
-.relay-arrow span{font-size:10px;font-family:var(--mono);color:var(--cyan);font-weight:700;
-  padding:2px 8px;border-radius:4px;background:var(--cyan-soft)}
-
-.flow-right{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;
-  transform:translateX(40px);opacity:0;transition:.8s cubic-bezier(.22,1,.36,1) .2s}
-.flow-right.entered{transform:translateX(0);opacity:1}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PAGE 3: 核心能力 (IMMERSIVE SHOWCASE)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.feat-page .content{flex:1;display:flex;flex-direction:column;justify-content:center;
-  padding:40px clamp(16px,5vw,64px) 80px;max-width:1100px;margin:0 auto;width:100%}
-.feat-page h2{font-size:clamp(28px,4vw,48px);line-height:1;letter-spacing:-.04em;margin-bottom:8px;
-  opacity:0;transform:translateY(20px);transition:.6s}
-.feat-page h2.entered{opacity:1;transform:translateY(0)}
-
-/* Showcase area: one big stage with cards floating in */
-.feat-showcase{position:relative;width:100%;height:clamp(320px,45vh,520px);margin-top:16px;
-  perspective:1000px}
-.feat-card{position:absolute;background:var(--sf);border:1px solid var(--bd);border-radius:16px;
-  padding:22px 20px;width:clamp(180px,22vw,260px);transition:.7s cubic-bezier(.22,1,.36,1);
-  opacity:0;cursor:default;overflow:hidden}
-.feat-card.entered{opacity:1}
-.feat-card:hover{border-color:rgba(34,211,238,.35);transform:scale(1.06)!important;z-index:5;
-  box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.feat-card .icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;border:1px solid var(--bd)}
-.feat-card h3{font-size:16px;margin-bottom:6px;letter-spacing:-.01em}
-.feat-card p{color:var(--tx2);font-size:13px;line-height:1.6}
-.feat-card .demo-line{margin-top:10px;padding:6px 8px;border-radius:7px;font-family:var(--mono);
-  font-size:11px;color:var(--dim);background:rgba(255,255,255,.02);border:1px solid var(--bd);
-  opacity:0;transition:.4s}
-.feat-card .demo-line.entered{opacity:1}
-/* Glow pulse on entry */
+/* ── PAGE 3: FEATURES ── */
+.feat-page .content{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px clamp(16px,5vw,64px) 80px;max-width:1100px;margin:0 auto;width:100%}
+.feat-page h2{font-size:clamp(28px,4vw,48px);line-height:1;letter-spacing:-.04em;margin-bottom:24px;opacity:0;transform:translateY(20px);transition:.6s}
+.feat-page h2.in{opacity:1;transform:translateY(0)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:22px 20px;transition:.6s cubic-bezier(.22,1,.36,1);opacity:0;cursor:default;overflow:hidden}
+.feat-card.in{opacity:1}
+.feat-card:hover{border-color:rgba(34,211,238,.35);transform:translateY(-3px)!important;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.feat-card .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;border:1px solid var(--bd)}
+.feat-card h3{font-size:16px;margin-bottom:6px}.feat-card p{color:var(--tx2);font-size:13px;line-height:1.6}
+.feat-card .dl{margin-top:10px;padding:6px 8px;border-radius:7px;font-family:var(--mono);font-size:11px;color:var(--dim);background:rgba(255,255,255,.02);border:1px solid var(--bd);opacity:0;transition:.4s}
+.feat-card .dl.in{opacity:1}
 .feat-card.glow{box-shadow:0 0 40px rgba(34,211,238,.12)}
 
-/* Card positions (will be overridden by JS for responsive) */
-.feat-card[data-feat="0"]{top:0;left:2%}
-.feat-card[data-feat="1"]{top:0;left:38%}
-.feat-card[data-feat="2"]{top:0;right:2%}
-.feat-card[data-feat="3"]{bottom:0;left:8%}
-.feat-card[data-feat="4"]{bottom:0;left:44%}
-.feat-card[data-feat="5"]{bottom:0;right:4%}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PAGE 4: CTA
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.cta-page .content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:40px clamp(16px,6vw,80px) 80px;text-align:center}
-.cta-panel{max-width:720px;border:1px solid rgba(34,211,238,.18);
-  background:linear-gradient(135deg,rgba(34,211,238,.05),rgba(167,139,250,.03));
-  border-radius:28px;padding:clamp(36px,5vw,64px);box-shadow:0 24px 80px rgba(0,0,0,.3);
-  opacity:0;transform:translateY(30px) scale(.96);transition:.8s cubic-bezier(.22,1,.36,1)}
-.cta-panel.entered{opacity:1;transform:translateY(0) scale(1)}
+/* ── PAGE 4: CTA ── */
+.cta-page .content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px clamp(16px,6vw,80px) 80px;text-align:center}
+.cta-panel{max-width:780px;width:100%;border:1px solid rgba(34,211,238,.18);background:linear-gradient(135deg,rgba(34,211,238,.05),rgba(167,139,250,.03));border-radius:28px;padding:clamp(36px,5vw,64px);box-shadow:0 24px 80px rgba(0,0,0,.3);opacity:0;transform:translateY(30px) scale(.96);transition:.8s cubic-bezier(.22,1,.36,1)}
+.cta-panel.in{opacity:1;transform:translateY(0) scale(1)}
 .cta-panel h2{margin-bottom:16px;font-size:clamp(28px,4.5vw,52px);line-height:1.1;letter-spacing:-.04em}
-.cta-panel p{color:var(--tx2);font-size:17px;max-width:540px;margin:0 auto 28px;line-height:1.7}
-.cta-highlight{display:inline;white-space:nowrap;
-  background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cta-hl{display:inline;white-space:nowrap;background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cta-panel .desc{color:var(--tx2);font-size:17px;max-width:560px;margin:0 auto 28px;line-height:1.7}
+/* Feature pills */
+.cta-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:28px}
+.cta-pill{padding:6px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--sf);font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:5px;opacity:0;transform:translateY(10px);transition:.4s}
+.cta-pill.in{opacity:1;transform:translateY(0)}
+.cta-pill .pi{width:6px;height:6px;border-radius:999px;flex:0 0 auto}
 .btn-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.btn{border:1px solid var(--bd);background:var(--sf2);border-radius:999px;padding:10px 18px;
-  display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:.25s;font-size:13px;font-weight:600;color:var(--tx2)}
+.btn{border:1px solid var(--bd);background:var(--sf2);border-radius:999px;padding:10px 18px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:.25s;font-size:13px;font-weight:600;color:var(--tx2)}
 .btn:hover{transform:translateY(-2px);border-color:var(--cyan);color:var(--tx);box-shadow:0 8px 30px rgba(34,211,238,.1)}
-.btn.primary{background:linear-gradient(135deg,var(--cyan2),var(--violet));border-color:rgba(34,211,238,.3);
-  color:var(--bg);font-weight:800;box-shadow:0 10px 36px rgba(34,211,238,.15)}
+.btn.primary{background:linear-gradient(135deg,var(--cyan2),var(--violet));border-color:rgba(34,211,238,.3);color:var(--bg);font-weight:800;box-shadow:0 10px 36px rgba(34,211,238,.15)}
 .btn svg{width:15px;height:15px}
+.tech-row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:20px}
+.tech-tag{font-size:10px;font-family:var(--mono);color:var(--dim);padding:3px 8px;border-radius:4px;border:1px solid var(--bd);background:var(--sf)}
 
-/* ── Mobile ── */
 @media(max-width:768px){
   .stage{max-height:calc(100vh - 80px);border-radius:18px}
-  .chat{padding:10px 12px;gap:6px}
-  .msg-av{width:26px;height:26px;border-radius:8px;font-size:9px}
-  .msg-bubble{padding:7px 9px;font-size:12px}
-  .tool-output{font-size:9.5px}
-  .handoff{font-size:9px;padding:4px 7px}
+  .chat{padding:10px 12px}.msg-av{width:26px;height:26px;border-radius:8px;font-size:9px}
+  .msg-bubble{padding:7px 9px;font-size:12px}.tool-output{font-size:9.5px}.handoff{font-size:9px;padding:4px 7px}
   .flow-split{flex-direction:column;height:auto;gap:24px}
-  .flow-left{flex:0 0 auto;padding-right:0;transform:translateY(30px)}
-  .flow-right{transform:translateY(30px)}
-  .relay-track{max-width:100%}
-  .feat-showcase{height:auto;min-height:500px;perspective:none}
-  .feat-card{position:relative!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;
-    width:100%!important;margin-bottom:10px;transform:translateY(20px)!important}
-  .feat-card.entered{transform:translateY(0)!important}
-  .chain-strip{padding:8px 12px}
-  .chain-node{width:28px;height:28px;font-size:9px}
-  .chain-line{width:16px}
-  .next-btn{bottom:16px;right:16px;padding:8px 14px;font-size:12px}
-  .next-btn .key{display:none}
+  .flow-left{flex:0 0 auto;padding-right:0;transform:translateY(20px)!important}.flow-right{transform:translateY(20px)!important}
+  .r-track{max-width:100%}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .chain-strip{padding:8px 12px}.c-node{width:28px;height:28px;font-size:9px}.c-line{width:16px}
+  .next-btn{bottom:16px;right:16px;padding:8px 14px;font-size:12px}.next-btn .key{display:none}
+  .cta-pills{gap:6px}
 }
 @media(max-width:480px){
-  .brand .repo{display:none}
+  .feat-grid{grid-template-columns:1fr}.brand .repo{display:none}
   .cta-panel h2{font-size:clamp(24px,7vw,36px)}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -291,434 +191,268 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 <div class="bg-grid"></div>
 <div class="scanline"></div>
 
-<!-- ════════ PAGE 1: 产品发布作战室 ════════ -->
+<!-- PAGE 1 -->
 <div class="page demo-page" id="page1">
   <div class="topbar">
-    <div class="brand">
-      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
-      Myna
-      <span class="repo">uskyu/Myna</span>
-    </div>
-    <div class="topbar-right">
-      <span class="page-indicator">1 / 4</span>
-      <button class="btn-replay" id="btnReplay">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
-        重播
-      </button>
-    </div>
+    <div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>Myna<span class="repo">uskyu/Myna</span></div>
+    <div class="topbar-right"><span class="page-ind">1 / 4</span><button class="btn-sm" id="btnReplay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>重播</button></div>
   </div>
   <div class="stage-wrap">
     <div class="stage">
-      <div class="stage-bar">
-        <div class="dots"><i></i><i></i><i></i></div>
-        <div class="stage-title">room://产品发布作战室</div>
+      <div class="stage-bar"><div class="dots"><i></i><i></i><i></i></div><div class="stage-title">room://产品发布作战室</div></div>
+      <div class="chain-strip">
+        <div class="c-node" data-i="0" style="color:var(--amber)">我</div><div class="c-line" data-i="0"></div>
+        <div class="c-node" data-i="1" style="color:var(--cyan)">PM</div><div class="c-line" data-i="1"></div>
+        <div class="c-node" data-i="2" style="color:var(--green)">FE</div><div class="c-line" data-i="2"></div>
+        <div class="c-node" data-i="3" style="color:var(--rose)">QA</div><div class="c-line" data-i="3"></div>
+        <div class="c-node" data-i="4" style="color:var(--violet)">OPS</div>
       </div>
-      <div class="chain-strip" id="chainStrip">
-        <div class="chain-node" data-idx="0" style="color:var(--amber)">我</div>
-        <div class="chain-line" data-idx="0"></div>
-        <div class="chain-node" data-idx="1" style="color:var(--cyan)">PM</div>
-        <div class="chain-line" data-idx="1"></div>
-        <div class="chain-node" data-idx="2" style="color:var(--green)">FE</div>
-        <div class="chain-line" data-idx="2"></div>
-        <div class="chain-node" data-idx="3" style="color:var(--rose)">QA</div>
-        <div class="chain-line" data-idx="3"></div>
-        <div class="chain-node" data-idx="4" style="color:var(--violet)">OPS</div>
-      </div>
-      <div class="chat" id="chatArea">
-        <div class="chat-inner" id="chatInner"></div>
-      </div>
+      <div class="chat" id="chatArea"><div class="chat-inner" id="chatInner"></div></div>
     </div>
   </div>
-  <button class="next-btn" onclick="document.getElementById('page2').scrollIntoView({behavior:'smooth'})">
-    接力流程 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-    <span class="key">↓</span>
-  </button>
+  <button class="next-btn" onclick="goPage('page2')">接力流程 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg><span class="key">↓</span></button>
 </div>
 
-<!-- ════════ PAGE 2: 接力流程 (IMMERSIVE) ════════ -->
+<!-- PAGE 2 -->
 <div class="page flow-page" id="page2">
-  <div class="topbar">
-    <div class="brand">
-      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
-      Myna
-      <span class="repo">uskyu/Myna</span>
-    </div>
-    <span class="page-indicator">2 / 4</span>
-  </div>
+  <div class="topbar"><div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>Myna<span class="repo">uskyu/Myna</span></div><span class="page-ind">2 / 4</span></div>
   <div class="content">
-    <div class="flow-split" id="flowSplit">
+    <div class="flow-split">
       <div class="flow-left" id="flowLeft">
         <div class="kicker">Relay Chain</div>
         <h2>不是聊天，<br>是接力</h2>
-        <p style="color:var(--tx2);font-size:15px;line-height:1.7;max-width:360px">
-          每个智能体有角色、模型、技能。用户说目标，Myna 自动串起来——分析、实现、复测、部署，一环扣一环。
-        </p>
+        <p style="color:var(--tx2);font-size:15px;line-height:1.7;max-width:360px">每个智能体有角色、模型、技能。用户说目标，Myna 自动串起来——分析、实现、复测、部署，一环扣一环。</p>
       </div>
       <div class="flow-right" id="flowRight">
-        <div class="relay-track" id="relayTrack">
-          <div class="relay-item" data-relay="0"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 01</div><h3>说出目标</h3><p>一句话描述要做什么，房间上下文自动保留</p><div class="mini-bubble">@产品经理 拆卖点，@前端 做页面</div></div></div>
-          <div class="relay-arrow" data-relay-arrow="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
-          <div class="relay-item" data-relay="1"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 02</div><h3>自动分工</h3><p>@谁谁就上，每个角色用最合适的模型</p><div class="mini-bubble">PM→Claude / FE→GPT-4o / QA→Gemini</div></div></div>
-          <div class="relay-arrow" data-relay-arrow="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
-          <div class="relay-item" data-relay="2"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 03</div><h3>交接接力</h3><p>完成后自动传递上下文，链深度可见</p><div class="mini-bubble">⟶ PM→FE (需求+结构+卖点)</div></div></div>
-          <div class="relay-arrow" data-relay-arrow="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
-          <div class="relay-item" data-relay="3"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 04</div><h3>工具执行可见</h3><p>终端命令、浏览器操作、文件读写实时展示</p><div class="mini-bubble">$ npm run build ✓ / browser→click ✓</div></div></div>
-          <div class="relay-arrow" data-relay-arrow="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
-          <div class="relay-item" data-relay="4"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 05</div><h3>产物沉淀</h3><p>代码、文档、截图、日志留在共享工作空间</p><div class="mini-bubble">📦 index.html · screenshot.png · deploy.log</div></div></div>
+        <div class="r-track" id="rTrack">
+          <div class="r-item" data-r="0"><div class="r-rail"><div class="dot"></div><div class="beam"></div></div><div class="r-card"><div class="sl">STEP 01</div><h3>说出目标</h3><p>一句话描述要做什么，房间上下文自动保留</p><div class="mb">@产品经理 拆卖点，@前端 做页面</div></div></div>
+          <div class="r-arrow" data-ra="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="r-item" data-r="1"><div class="r-rail"><div class="dot"></div><div class="beam"></div></div><div class="r-card"><div class="sl">STEP 02</div><h3>自动分工</h3><p>@谁谁就上，每个角色用最合适的模型</p><div class="mb">PM→Claude / FE→GPT-4o / QA→Gemini</div></div></div>
+          <div class="r-arrow" data-ra="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="r-item" data-r="2"><div class="r-rail"><div class="dot"></div><div class="beam"></div></div><div class="r-card"><div class="sl">STEP 03</div><h3>交接接力</h3><p>完成后自动传递上下文，链深度可见</p><div class="mb">⟶ PM→FE (需求+结构+卖点)</div></div></div>
+          <div class="r-arrow" data-ra="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="r-item" data-r="3"><div class="r-rail"><div class="dot"></div><div class="beam"></div></div><div class="r-card"><div class="sl">STEP 04</div><h3>工具执行可见</h3><p>终端命令、浏览器操作、文件读写实时展示</p><div class="mb">$ npm run build ✓ / browser→click ✓</div></div></div>
+          <div class="r-arrow" data-ra="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="r-item" data-r="4"><div class="r-rail"><div class="dot"></div><div class="beam"></div></div><div class="r-card"><div class="sl">STEP 05</div><h3>产物沉淀</h3><p>代码、文档、截图、日志留在共享工作空间</p><div class="mb">📦 index.html · screenshot.png · deploy.log</div></div></div>
         </div>
       </div>
     </div>
   </div>
-  <button class="next-btn" onclick="document.getElementById('page3').scrollIntoView({behavior:'smooth'})">
-    核心能力 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-    <span class="key">↓</span>
-  </button>
+  <button class="next-btn" onclick="goPage('page3')">核心能力 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg><span class="key">↓</span></button>
 </div>
 
-<!-- ════════ PAGE 3: 核心能力 (IMMERSIVE SHOWCASE) ════════ -->
+<!-- PAGE 3 -->
 <div class="page feat-page" id="page3">
-  <div class="topbar">
-    <div class="brand">
-      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
-      Myna
-      <span class="repo">uskyu/Myna</span>
-    </div>
-    <span class="page-indicator">3 / 4</span>
-  </div>
+  <div class="topbar"><div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>Myna<span class="repo">uskyu/Myna</span></div><span class="page-ind">3 / 4</span></div>
   <div class="content">
     <div class="kicker">Core Capabilities</div>
     <h2 id="featTitle">为什么不是又一个聊天框</h2>
-    <div class="feat-showcase" id="featShowcase">
-      <!-- Card 0: 群聊式协作 -->
-      <div class="feat-card" data-feat="0">
-        <div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 0 0-10 0v2a5 5 0 0 0 10 0V8Z"/><path d="M7 10H4"/><path d="M20 10h-3"/><path d="M12 15v6"/></svg></div>
-        <h3>群聊式协作</h3>
-        <p>一个房间 = 一个任务现场，所有 Agent 围绕同一目标</p>
-        <div class="demo-line">@前端 @测试员 做完了吗？</div>
-      </div>
-      <!-- Card 1: @精确分工 -->
-      <div class="feat-card" data-feat="1">
-        <div class="icon" style="background:var(--green-soft);color:var(--green);border-color:rgba(74,222,128,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div>
-        <h3>@精确分工</h3>
-        <p>需要谁就 @ 谁，不同角色绑定不同模型和工具</p>
-        <div class="demo-line">PM→Claude / FE→GPT-4o</div>
-      </div>
-      <!-- Card 2: 自动交接 -->
-      <div class="feat-card" data-feat="2">
-        <div class="icon" style="background:var(--violet-soft);color:var(--violet);border-color:rgba(167,139,250,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10"/><path d="m10 3 4 4-4 4"/><path d="M20 17H10"/><path d="m14 13-4 4 4 4"/></svg></div>
-        <h3>自动交接</h3>
-        <p>完成后自动传递上下文，链深度可见不是黑盒</p>
-        <div class="demo-line">⟶ handoff: PM→FE (需求)</div>
-      </div>
-      <!-- Card 3: 终端 & 浏览器 -->
-      <div class="feat-card" data-feat="3">
-        <div class="icon" style="background:var(--amber-soft);color:var(--amber);border-color:rgba(251,191,36,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
-        <h3>终端 & 浏览器</h3>
-        <p>真实命令执行、浏览器操作，不是假装的</p>
-        <div class="demo-line">$ npm run build ✓</div>
-      </div>
-      <!-- Card 4: 审批机制 -->
-      <div class="feat-card" data-feat="4">
-        <div class="icon" style="background:var(--rose-soft);color:var(--rose);border-color:rgba(251,113,133,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v6c0 5 3.4 7.5 8 8 4.6-.5 8-3 8-8V7l-8-4Z"/><path d="m9 12 2 2 4-5"/></svg></div>
-        <h3>审批机制</h3>
-        <p>auto / confirm / manual 三档，危险操作可拦截</p>
-        <div class="demo-line">⚠️ rm -rf → 需要确认</div>
-      </div>
-      <!-- Card 5: 技能沉淀 -->
-      <div class="feat-card" data-feat="5">
-        <div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 20V9"/></svg></div>
-        <h3>技能沉淀</h3>
-        <p>稳定流程保存为技能，下次直接加载越用越强</p>
-        <div class="demo-line">📋 已加载: 前端验收流程</div>
-      </div>
+    <div class="feat-grid" id="featGrid">
+      <div class="feat-card" data-f="0"><div class="ic" style="background:var(--cyan-s);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 0 0-10 0v2a5 5 0 0 0 10 0V8Z"/><path d="M7 10H4"/><path d="M20 10h-3"/><path d="M12 15v6"/></svg></div><h3>群聊式协作</h3><p>一个房间 = 一个任务现场，所有 Agent 围绕同一目标</p><div class="dl">@前端 @测试员 做完了吗？</div></div>
+      <div class="feat-card" data-f="1"><div class="ic" style="background:var(--green-s);color:var(--green);border-color:rgba(74,222,128,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div><h3>@精确分工</h3><p>需要谁就 @ 谁，不同角色绑定不同模型和工具</p><div class="dl">PM→Claude / FE→GPT-4o</div></div>
+      <div class="feat-card" data-f="2"><div class="ic" style="background:var(--violet-s);color:var(--violet);border-color:rgba(167,139,250,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10"/><path d="m10 3 4 4-4 4"/><path d="M20 17H10"/><path d="m14 13-4 4 4 4"/></svg></div><h3>自动交接</h3><p>完成后自动传递上下文，链深度可见不是黑盒</p><div class="dl">⟶ handoff: PM→FE (需求)</div></div>
+      <div class="feat-card" data-f="3"><div class="ic" style="background:var(--amber-s);color:var(--amber);border-color:rgba(251,191,36,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div><h3>终端 & 浏览器</h3><p>真实命令执行、浏览器操作，不是假装的</p><div class="dl">$ npm run build ✓</div></div>
+      <div class="feat-card" data-f="4"><div class="ic" style="background:var(--rose-s);color:var(--rose);border-color:rgba(251,113,133,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v6c0 5 3.4 7.5 8 8 4.6-.5 8-3 8-8V7l-8-4Z"/><path d="m9 12 2 2 4-5"/></svg></div><h3>审批机制</h3><p>auto / confirm / manual 三档，危险操作可拦截</p><div class="dl">⚠️ rm -rf → 需确认</div></div>
+      <div class="feat-card" data-f="5"><div class="ic" style="background:var(--cyan-s);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 20V9"/></svg></div><h3>技能沉淀</h3><p>稳定流程保存为技能，下次直接加载越用越强</p><div class="dl">📋 已加载: 前端验收流程</div></div>
     </div>
   </div>
-  <button class="next-btn" onclick="document.getElementById('page4').scrollIntoView({behavior:'smooth'})">
-    开始使用 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-    <span class="key">↓</span>
-  </button>
+  <button class="next-btn" onclick="goPage('page4')">开始使用 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg><span class="key">↓</span></button>
 </div>
 
-<!-- ════════ PAGE 4: CTA ════════ -->
+<!-- PAGE 4 -->
 <div class="page cta-page" id="page4">
-  <div class="topbar">
-    <div class="brand">
-      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
-      Myna
-      <span class="repo">uskyu/Myna</span>
-    </div>
-    <span class="page-indicator">4 / 4</span>
-  </div>
+  <div class="topbar"><div class="brand"><span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>Myna<span class="repo">uskyu/Myna</span></div><span class="page-ind">4 / 4</span></div>
   <div class="content">
     <div class="cta-panel" id="ctaPanel">
-      <h2>多个 AI，<span class="cta-highlight">一个团队</span></h2>
-      <p>@分工，自动交接，工具可见。私有部署，记忆和技能可复用——让 AI 像真正的团队一样协作，而不是各说各话。</p>
-      <div class="btn-row">
-        <a class="btn primary" href="https://github.com/uskyu/Myna" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10Z"/></svg>
-          GitHub 开源
-        </a>
-        <button class="btn" onclick="document.getElementById('page1').scrollIntoView({behavior:'smooth'});setTimeout(play,600)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
-          重新播放
-        </button>
+      <h2>多个 AI，<span class="cta-hl">一个团队</span></h2>
+      <p class="desc">你发一句话，开发、测试、审查、运维 Agent 自动 @ 接力，调用真实工具，产出结果。自托管，基于 Hermes Agent，支持记忆、技能和完整工具执行。</p>
+      <div class="cta-pills" id="ctaPills">
+        <span class="cta-pill"><i class="pi" style="background:var(--cyan)"></i>链式协作</span>
+        <span class="cta-pill"><i class="pi" style="background:var(--green)"></i>@ 精确分工</span>
+        <span class="cta-pill"><i class="pi" style="background:var(--violet)"></i>自动交接</span>
+        <span class="cta-pill"><i class="pi" style="background:var(--amber)"></i>真实工具</span>
+        <span class="cta-pill"><i class="pi" style="background:var(--rose)"></i>审批机制</span>
+        <span class="cta-pill"><i class="pi" style="background:var(--cyan)"></i>技能沉淀</span>
+        <span class="cta-pill"><i class="pi" style="background:var(--green)"></i>自主进化</span>
+        <span class="cta-pill"><i class="pi" style="background:var(--violet)"></i>Docker 部署</span>
       </div>
+      <div class="btn-row">
+        <a class="btn primary" href="https://github.com/uskyu/Myna" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10Z"/></svg>GitHub 开源</a>
+        <button class="btn" onclick="goPage('page1');setTimeout(play,600)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>重新播放</button>
+      </div>
+      <div class="tech-row"><span class="tech-tag">Python 3.11+</span><span class="tech-tag">FastAPI</span><span class="tech-tag">Vue 3</span><span class="tech-tag">WebSocket</span><span class="tech-tag">Hermes Agent</span><span class="tech-tag">Docker</span></div>
     </div>
   </div>
 </div>
 
 <script>
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function goPage(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
 
-// ═══════════════════════════════════════
-// CHAT DEMO (Page 1)
-// ═══════════════════════════════════════
+// ═══ CHAT DEMO ═══
 const script=[
   {agent:'user',name:'我',cls:'user',text:'我要做一个产品官网改版。@产品经理 拆卖点，@前端 做页面，@测试员 复测，@运维 检查部署。'},
-  {agent:'pm',name:'产品经理',cls:'pm',tag:'分析中',tagBg:'var(--cyan-soft)',tagFg:'var(--cyan)',
-   text:'收到。需求拆解完成——页面结构3大模块，核心卖点5个，用户画像2类。现在交接给前端。',
-   handoff:{from:'PM',to:'FE',ctx:'需求文档 + 页面结构 + 卖点优先级'}},
-  {agent:'fe',name:'前端工程师',cls:'fe',tag:'编码中',tagBg:'var(--green-soft)',tagFg:'var(--green)',
-   text:'开始实现。修改 Hero 区域、产品特性网格、CTA 模块，同步桌面和移动端响应式。',
-   tool:{title:'终端执行',lines:[
-     {t:'cmd',s:'$ git checkout -b feature/redesign'},
-     {t:'info',s:'Switched to new branch feature/redesign'},
-     {t:'cmd',s:'$ npm run build'},
-     {t:'ok',s:'✓ Build completed in 3.2s'},
-     {t:'cmd',s:'$ browser.open("http://localhost:3456")'},
-     {t:'ok',s:'✓ Page loaded, screenshot captured'}]},
-   handoff:{from:'FE',to:'QA',ctx:'代码改动 + 构建产物 + 截图'}},
-  {agent:'qa',name:'测试员',cls:'qa',tag:'测试中',tagBg:'var(--rose-soft)',tagFg:'var(--rose)',
-   text:'执行验收测试。桌面布局、移动端适配、交互逻辑、控制台错误全查。',
-   tool:{title:'测试执行',lines:[
-     {t:'info',s:'▶ 桌面布局: Hero ✓'},
-     {t:'info',s:'▶ 桌面布局: 特性网格 ✓'},
-     {t:'info',s:'▶ 移动端: 响应式断点 ✓'},
-     {t:'err',s:'✗ CTA 按钮 hover 无反馈 → 已自动修复'},
-     {t:'ok',s:'✓ 全部 12 项测试通过'}]},
-   handoff:{from:'QA',to:'OPS',ctx:'测试报告 + 修复补丁 + 验收结论'}},
-  {agent:'ops',name:'运维',cls:'ops',tag:'部署中',tagBg:'var(--violet-soft)',tagFg:'var(--violet)',
-   text:'部署检查。服务状态、页面可访问性、SSL、CDN 缓存全部确认。',
-   tool:{title:'部署验证',lines:[
-     {t:'cmd',s:'$ kubectl get pods -n myna'},
-     {t:'ok',s:'✓ 3/3 pods running'},
-     {t:'cmd',s:'$ curl -s -o /dev/null -w "%{http_code}" https://myna.app'},
-     {t:'ok',s:'✓ HTTP 200'},
-     {t:'ok',s:'✓ 部署完成，产物已沉淀到共享工作空间'}]}}
+  {agent:'pm',name:'产品经理',cls:'pm',tag:'分析中',tagBg:'var(--cyan-s)',tagFg:'var(--cyan)',text:'收到。需求拆解完成——页面结构3大模块，核心卖点5个，用户画像2类。现在交接给前端。',handoff:{from:'PM',to:'FE',ctx:'需求文档 + 页面结构 + 卖点优先级'}},
+  {agent:'fe',name:'前端工程师',cls:'fe',tag:'编码中',tagBg:'var(--green-s)',tagFg:'var(--green)',text:'开始实现。修改 Hero 区域、产品特性网格、CTA 模块，同步桌面和移动端响应式。',tool:{title:'终端执行',lines:[{t:'cmd',s:'$ git checkout -b feature/redesign'},{t:'info',s:'Switched to new branch feature/redesign'},{t:'cmd',s:'$ npm run build'},{t:'ok',s:'✓ Build completed in 3.2s'},{t:'cmd',s:'$ browser.open("http://localhost:3456")'},{t:'ok',s:'✓ Page loaded, screenshot captured'}]},handoff:{from:'FE',to:'QA',ctx:'代码改动 + 构建产物 + 截图'}},
+  {agent:'qa',name:'测试员',cls:'qa',tag:'测试中',tagBg:'var(--rose-s)',tagFg:'var(--rose)',text:'执行验收测试。桌面布局、移动端适配、交互逻辑、控制台错误全查。',tool:{title:'测试执行',lines:[{t:'info',s:'▶ 桌面布局: Hero ✓'},{t:'info',s:'▶ 桌面布局: 特性网格 ✓'},{t:'info',s:'▶ 移动端: 响应式断点 ✓'},{t:'err',s:'✗ CTA 按钮 hover 无反馈 → 已自动修复'},{t:'ok',s:'✓ 全部 12 项测试通过'}]},handoff:{from:'QA',to:'OPS',ctx:'测试报告 + 修复补丁 + 验收结论'}},
+  {agent:'ops',name:'运维',cls:'ops',tag:'部署中',tagBg:'var(--violet-s)',tagFg:'var(--violet)',text:'部署检查。服务状态、页面可访问性、SSL、CDN 缓存全部确认。',tool:{title:'部署验证',lines:[{t:'cmd',s:'$ kubectl get pods -n myna'},{t:'ok',s:'✓ 3/3 pods running'},{t:'cmd',s:'$ curl -s -o /dev/null -w "%{http_code}" https://myna.app'},{t:'ok',s:'✓ HTTP 200'},{t:'ok',s:'✓ 部署完成，产物已沉淀到共享工作空间'}]}}
 ];
 
-let runToken=0;
-let userScrolledChat=false;
-const chatArea=$('#chatArea');
+let runToken=0, userScrolled=false;
+const chatEl=$('#chatArea');
+chatEl.addEventListener('scroll',()=>{userScrolled=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight>40});
 
-// Detect manual scroll
-chatArea.addEventListener('scroll',()=>{
-  const atBottom=chatArea.scrollHeight-chatArea.scrollTop-chatArea.clientHeight<40;
-  userScrolledChat=!atBottom;
-});
-
-function scrollChatToBottom(){
-  if(!userScrolledChat){
-    chatArea.scrollTop=chatArea.scrollHeight;
-  }
-}
+function toBottom(){if(!userScrolled)chatEl.scrollTop=chatEl.scrollHeight}
 
 function mkMsg(item,i){
   const el=document.createElement('div');el.className='chat-msg';el.dataset.idx=i;
   let tagH=item.tag?`<span class="tag" style="background:${item.tagBg};color:${item.tagFg}">${item.tag}</span>`:'';
   let toolH='';
-  if(item.tool){
-    const lines=item.tool.lines.map(l=>`<div class="${l.t}">${l.s}</div>`).join('');
-    toolH=`<div class="tool-panel" data-ti="${i}"><div class="tool-head">⌘ ${item.tool.title}<div class="tool-status"><span class="spinner"></span><span class="check" style="display:none">✓</span></div></div><div class="tool-output">${lines}</div></div>`;
-  }
+  if(item.tool){const ls=item.tool.lines.map(l=>`<div class="${l.t}">${l.s}</div>`).join('');toolH=`<div class="tool-panel" data-ti="${i}"><div class="tool-head">⌘ ${item.tool.title}<div class="tool-status"><span class="spinner"></span><span class="ck" style="display:none">✓</span></div></div><div class="tool-output">${ls}</div></div>`}
   let hoH='';
-  if(item.handoff){
-    const ds=Array(6).fill('<i></i>').join('');
-    hoH=`<div class="handoff" data-hi="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>${item.handoff.from} → ${item.handoff.to}</span><span class="fdots">${ds}</span><span class="ctx">${item.handoff.ctx}</span></div>`;
-  }
-  el.innerHTML=`<div class="msg-av ${item.cls}" data-ai="${i}">${item.name[0]}</div><div class="msg-body"><div class="msg-name">${item.name}${tagH}</div><div class="msg-bubble"><span class="mt" data-mi="${i}"></span><span class="typing-cursor" data-ci="${i}"></span></div>${toolH}${hoH}</div>`;
+  if(item.handoff){const ds=Array(6).fill('<i></i>').join('');hoH=`<div class="handoff" data-hi="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>${item.handoff.from} → ${item.handoff.to}</span><span class="fd">${ds}</span><span class="ctx">${item.handoff.ctx}</span></div>`}
+  el.innerHTML=`<div class="msg-av ${item.cls}" data-ai="${i}">${item.name[0]}</div><div class="msg-body"><div class="msg-name">${item.name}${tagH}</div><div class="msg-bubble"><span class="mt" data-mi="${i}"></span><span class="cursor" data-ci="${i}"></span></div>${toolH}${hoH}</div>`;
   return el;
 }
 
-async function typeEl(el,text,tk,spd=14){
-  for(let i=0;i<text.length;i++){
-    if(tk!==runToken)return false;
-    el.textContent=text.slice(0,i+1);
-    scrollChatToBottom();
-    await sleep(spd);
-  }
-  return true;
-}
-
-async function animTool(i,tk){
-  const p=document.querySelector(`.tool-panel[data-ti="${i}"]`);if(!p||tk!==runToken)return;
-  p.classList.add('in');scrollChatToBottom();
-  const ls=p.querySelectorAll('.tool-output > div');ls.forEach(l=>l.style.opacity='0');
-  for(let j=0;j<ls.length;j++){if(tk!==runToken)return;await sleep(160);ls[j].style.opacity='1';ls[j].style.transition='.25s';scrollChatToBottom()}
-  await sleep(200);
-  const sp=p.querySelector('.spinner'),ck=p.querySelector('.check');
-  if(sp)sp.style.display='none';if(ck)ck.style.display='inline';
-  scrollChatToBottom();
-}
-
-async function animHO(i,tk){
-  const h=document.querySelector(`.handoff[data-hi="${i}"]`);if(!h||tk!==runToken)return;
-  h.classList.add('in');scrollChatToBottom();
-  const ds=h.querySelectorAll('.fdots i');
-  for(let j=0;j<ds.length;j++){if(tk!==runToken)return;await sleep(80);ds[j].classList.add('lit');scrollChatToBottom()}
-}
+async function typeEl(el,text,tk,spd=14){for(let i=0;i<text.length;i++){if(tk!==runToken)return false;el.textContent=text.slice(0,i+1);toBottom();await sleep(spd)}return true}
+async function animTool(i,tk){const p=document.querySelector(`.tool-panel[data-ti="${i}"]`);if(!p||tk!==runToken)return;p.classList.add('in');toBottom();const ls=p.querySelectorAll('.tool-output > div');ls.forEach(l=>l.style.opacity='0');for(let j=0;j<ls.length;j++){if(tk!==runToken)return;await sleep(160);ls[j].style.opacity='1';ls[j].style.transition='.25s';toBottom()}await sleep(200);const sp=p.querySelector('.spinner'),ck=p.querySelector('.ck');if(sp)sp.style.display='none';if(ck)ck.style.display='inline';toBottom()}
+async function animHO(i,tk){const h=document.querySelector(`.handoff[data-hi="${i}"]`);if(!h||tk!==runToken)return;h.classList.add('in');toBottom();const ds=h.querySelectorAll('.fd i');for(let j=0;j<ds.length;j++){if(tk!==runToken)return;await sleep(80);ds[j].classList.add('lit');toBottom()}}
 
 async function play(){
-  const tk=++runToken;
-  const inner=$('#chatInner');inner.innerHTML='';
-  userScrolledChat=false;
-  $$('.chain-node').forEach(n=>n.classList.remove('lit'));
-  $$('.chain-line').forEach(l=>l.classList.remove('lit'));
-  // Scroll to bottom immediately
-  chatArea.scrollTop=0;
+  const tk=++runToken;const inner=$('#chatInner');inner.innerHTML='';userScrolled=false;
+  $$('.c-node').forEach(n=>n.classList.remove('lit'));$$('.c-line').forEach(l=>l.classList.remove('lit'));
   await sleep(200);
   script.forEach((item,i)=>{const el=mkMsg(item,i);inner.appendChild(el)});
+  // IMPORTANT: scroll to bottom before starting, so first messages are visible
+  toBottom();
   for(let i=0;i<script.length;i++){
-    if(tk!==runToken)return;const item=script[i];const msg=inner.querySelector(`.chat-msg[data-idx="${i}"]`);
-    const nodes=$$('.chain-node'),lines=$$('.chain-line');
+    if(tk!==runToken)return;const msg=inner.querySelector(`.chat-msg[data-idx="${i}"]`);
+    const nodes=$$('.c-node'),lines=$$('.c-line');
     nodes.forEach(n=>n.classList.remove('lit'));
     if(i<nodes.length)nodes[i].classList.add('lit');
     if(i>0&&i-1<lines.length)lines[i-1].classList.add('lit');
-    const av=msg.querySelector('.msg-av');if(av&&i>0)av.classList.add('active-agent');
-    msg.classList.add('in');scrollChatToBottom();await sleep(120);
-    const txt=msg.querySelector(`.mt[data-mi="${i}"]`),cur=msg.querySelector(`.typing-cursor[data-ci="${i}"]`);
-    const ok=await typeEl(txt,item.text,tk,i===0?10:13);if(!ok)return;
-    if(cur)cur.style.display='none';if(av)av.classList.remove('active-agent');
+    const av=msg.querySelector('.msg-av');if(av&&i>0)av.classList.add('pulse');
+    msg.classList.add('in');toBottom();await sleep(120);
+    const txt=msg.querySelector(`.mt[data-mi="${i}"]`),cur=msg.querySelector(`.cursor[data-ci="${i}"]`);
+    const ok=await typeEl(txt,script[i].text,tk,i===0?10:13);if(!ok)return;
+    if(cur)cur.style.display='none';if(av)av.classList.remove('pulse');
     await sleep(250);
-    if(item.tool){await animTool(i,tk);await sleep(250)}
-    if(item.handoff){await animHO(i,tk);await sleep(350)}
-    scrollChatToBottom();
+    if(script[i].tool){await animTool(i,tk);await sleep(250)}
+    if(script[i].handoff){await animHO(i,tk);await sleep(350)}
+    toBottom();
   }
 }
-
 $('#btnReplay').addEventListener('click',play);
 
-// ═══════════════════════════════════════
-// PAGE 2: RELAY ANIMATION
-// ═══════════════════════════════════════
-let flowAnimated=false;
+// ═══ PAGE 2: RELAY FLOW (fade in/out cycle) ═══
+let flowDone=false;
 async function animateFlow(){
-  if(flowAnimated)return;flowAnimated=true;
-  $('#flowLeft').classList.add('entered');
-  $('#flowRight').classList.add('entered');
+  if(flowDone)return;flowDone=true;
+  $('#flowLeft').classList.add('in');
+  $('#flowRight').classList.add('in');
   await sleep(400);
-  const items=$$('.relay-item');
-  const arrows=$$('.relay-arrow');
+  const items=$$('.r-item'),arrows=$$('.r-arrow');
   for(let i=0;i<items.length;i++){
-    const item=items[i];
-    item.classList.add('entered');
-    const dot=item.querySelector('.relay-rail .dot');
-    if(dot)dot.classList.add('active');
-    const card=item.querySelector('.relay-card');
-    if(card)card.classList.add('active');
-    if(i>0){const prevBeam=items[i-1].querySelector('.relay-rail .beam');if(prevBeam)prevBeam.classList.add('full')}
-    await sleep(300);
-    if(i<arrows.length){arrows[i].classList.add('entered');await sleep(200)}
+    items[i].classList.add('in');
+    const dot=items[i].querySelector('.r-rail .dot');if(dot)dot.classList.add('on');
+    const card=items[i].querySelector('.r-card');if(card)card.classList.add('on');
+    if(i>0){const pb=items[i-1].querySelector('.r-rail .beam');if(pb)pb.classList.add('full')}
+    await sleep(350);
+    if(i<arrows.length){arrows[i].classList.add('in');await sleep(200)}
   }
-  const lastBeam=items[items.length-1].querySelector('.relay-rail .beam');
-  if(lastBeam)lastBeam.classList.add('full');
+  const lb=items[items.length-1].querySelector('.r-rail .beam');if(lb)lb.classList.add('full');
+  // Cycle: after all visible, start fade-out/fade-in loop
+  await sleep(2000);
+  while(true){
+    // Fade out top item, shift up, fade in new at bottom
+    for(let i=0;i<items.length;i++){
+      if(runToken<0)break; // page left
+      // Fade out item 0
+      items[0].classList.remove('in');items[0].classList.add('out');
+      await sleep(500);
+      // Move item 0 to end, reset its state
+      const track=$('#rTrack');
+      const first=items[0];
+      first.classList.remove('out');
+      // Reset dot/beam/card
+      const fd=first.querySelector('.r-rail .dot');if(fd)fd.classList.remove('on');
+      const fb=first.querySelector('.r-rail .beam');if(fb)fb.classList.remove('full');
+      const fc=first.querySelector('.r-card');if(fc)fc.classList.remove('on');
+      first.style.opacity='0';first.style.transform='translateX(20px)';
+      track.appendChild(first);
+      // Re-activate it at new position
+      await sleep(300);
+      first.style.opacity='';first.style.transform='';
+      first.classList.add('in');
+      const nd=first.querySelector('.r-rail .dot');if(nd)nd.classList.add('on');
+      const nc=first.querySelector('.r-card');if(nc)nc.classList.add('on');
+      // Fill its beam
+      await sleep(200);
+      const nb=first.querySelector('.r-rail .beam');if(nb)nb.classList.add('full');
+      // Re-arrow
+      const lastArrow=arrows[arrows.length-1];
+      if(lastArrow){track.appendChild(lastArrow);lastArrow.classList.add('in')}
+      // Refresh items list
+      break; // one cycle at a time, then wait
+    }
+    await sleep(2500);
+  }
 }
 
-// ═══════════════════════════════════════
-// PAGE 3: FEATURE CARDS — IMMERSIVE SHOWCASE
-// Cards fly in from different directions, then demo-line appears
-// ═══════════════════════════════════════
-let featAnimated=false;
-
-// Define fly-in transforms per card
-const featTransforms=[
-  {start:'translate(-120px, -60px) rotate(-8deg)',end:'translate(0,0) rotate(0deg)'},
-  {start:'translate(0, -100px) rotate(3deg)',end:'translate(0,0) rotate(0deg)'},
-  {start:'translate(120px, -60px) rotate(6deg)',end:'translate(0,0) rotate(0deg)'},
-  {start:'translate(-100px, 60px) rotate(5deg)',end:'translate(0,0) rotate(0deg)'},
-  {start:'translate(0, 100px) rotate(-4deg)',end:'translate(0,0) rotate(0deg)'},
-  {start:'translate(100px, 60px) rotate(-7deg)',end:'translate(0,0) rotate(0deg)'},
+// ═══ PAGE 3: FEATURE CARDS (stagger + fly from edges) ═══
+let featDone=false;
+const flyTransforms=[
+  'translate(-80px,-40px) rotate(-5deg)',
+  'translate(0,-80px) rotate(2deg)',
+  'translate(80px,-40px) rotate(4deg)',
+  'translate(-60px,40px) rotate(3deg)',
+  'translate(0,80px) rotate(-3deg)',
+  'translate(60px,40px) rotate(-5deg)',
 ];
 
 async function animateFeats(){
-  if(featAnimated)return;featAnimated=true;
-  // Title fade in
-  $('#featTitle').classList.add('entered');
-  await sleep(300);
-  // Cards fly in one by one
+  if(featDone)return;featDone=true;
+  $('#featTitle').classList.add('in');
+  await sleep(200);
   const cards=$$('.feat-card');
   for(let i=0;i<cards.length;i++){
-    const card=cards[i];
-    const t=featTransforms[i];
-    // Set initial transform
-    card.style.transform=t.start;
+    const c=cards[i];
+    c.style.transform=flyTransforms[i];
+    await sleep(60);
+    c.classList.add('in');
+    c.style.transform='translate(0,0) rotate(0)';
+    c.classList.add('glow');
+    setTimeout(()=>c.classList.remove('glow'),600);
+    await sleep(120);
+    const dl=c.querySelector('.dl');if(dl)dl.classList.add('in');
     await sleep(80);
-    // Animate to final position
-    card.classList.add('entered');
-    card.style.transform=t.end;
-    // Brief glow
-    card.classList.add('glow');
-    setTimeout(()=>card.classList.remove('glow'),600);
-    await sleep(150);
-    // Show demo-line
-    const dl=card.querySelector('.demo-line');
-    if(dl)dl.classList.add('entered');
-    await sleep(100);
   }
 }
 
-// ═══════════════════════════════════════
-// PAGE 4: CTA fade in
-// ═══════════════════════════════════════
-let ctaAnimated=false;
-function animateCta(){
-  if(ctaAnimated)return;ctaAnimated=true;
-  $('#ctaPanel').classList.add('entered');
+// ═══ PAGE 4: CTA fade in + pills stagger ═══
+let ctaDone=false;
+async function animateCta(){
+  if(ctaDone)return;ctaDone=true;
+  $('#ctaPanel').classList.add('in');
+  await sleep(300);
+  const pills=$$('.cta-pill');
+  for(let i=0;i<pills.length;i++){
+    await sleep(60);
+    pills[i].classList.add('in');
+  }
 }
 
-// ═══════════════════════════════════════
-// SCROLL OBSERVER
-// ═══════════════════════════════════════
-const pageIO=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const id=e.target.id;
-      if(id==='page2')animateFlow();
-      if(id==='page3')animateFeats();
-      if(id==='page4')animateCta();
-    }
-  });
-},{threshold:.3});
-pageIO.observe($('#page2'));
-pageIO.observe($('#page3'));
-pageIO.observe($('#page4'));
+// ═══ SCROLL OBSERVER ═══
+const pio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const id=e.target.id;if(id==='page2')animateFlow();if(id==='page3')animateFeats();if(id==='page4')animateCta()}})},{threshold:.3});
+pio.observe($('#page2'));pio.observe($('#page3'));pio.observe($('#page4'));
 
-// ═══════════════════════════════════════
-// KEYBOARD NAV
-// ═══════════════════════════════════════
+// ═══ KEYBOARD NAV ═══
 document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){
-    e.preventDefault();
-    const pages=['page1','page2','page3','page4'];
-    const current=pages.findIndex(id=>{
-      const el=document.getElementById(id);
-      const r=el.getBoundingClientRect();
-      return r.top>=-100&&r.top<window.innerHeight/2;
-    });
-    if(current<pages.length-1)document.getElementById(pages[current+1]).scrollIntoView({behavior:'smooth'});
-  }
-  if(e.key==='ArrowUp'||e.key==='PageUp'){
-    const pages=['page1','page2','page3','page4'];
-    const current=pages.findIndex(id=>{
-      const el=document.getElementById(id);
-      const r=el.getBoundingClientRect();
-      return r.top>=-100&&r.top<window.innerHeight/2;
-    });
-    if(current>0)document.getElementById(pages[current-1]).scrollIntoView({behavior:'smooth'});
-  }
+  if(e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){e.preventDefault();const p=['page1','page2','page3','page4'];const c=p.findIndex(id=>{const el=document.getElementById(id);const r=el.getBoundingClientRect();return r.top>=-100&&r.top<window.innerHeight/2});if(c<p.length-1)goPage(p[c+1])}
+  if(e.key==='ArrowUp'||e.key==='PageUp'){const p=['page1','page2','page3','page4'];const c=p.findIndex(id=>{const el=document.getElementById(id);const r=el.getBoundingClientRect();return r.top>=-100&&r.top<window.innerHeight/2});if(c>0)goPage(p[c-1])}
 });
 
-// Auto play on load
 window.addEventListener('load',()=>setTimeout(play,500));
 </script>
 </body>
