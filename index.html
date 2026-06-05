@@ -8,215 +8,228 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#09090b;--bg2:#111114;--sf:#18181b;--sf2:#1e1e22;--sf3:#27272a;
+  --bg:#09090b;--sf:#131316;--sf2:#1a1a1e;--sf3:#222226;
   --tx:#fafaf9;--tx2:#d4d4d8;--dim:#71717a;
-  --bd:#2e2e33;--accent:#22d3ee;--accent2:#06b6d4;--accent-soft:rgba(34,211,238,.1);
+  --bd:#2a2a2f;
+  --cyan:#22d3ee;--cyan2:#06b6d4;--cyan-soft:rgba(34,211,238,.1);
   --green:#4ade80;--green-soft:rgba(74,222,128,.1);
   --amber:#fbbf24;--amber-soft:rgba(251,191,36,.1);
   --rose:#fb7185;--rose-soft:rgba(251,113,133,.1);
   --violet:#a78bfa;--violet-soft:rgba(167,139,250,.1);
-  --r:16px;--r-sm:10px;
+  --r:16px;--mono:"SF Mono","JetBrains Mono","Fira Code",Consolas,monospace;
   --font:-apple-system,BlinkMacSystemFont,"Inter","SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  --mono:"SF Mono","JetBrains Mono","Fira Code",Consolas,monospace;
 }
-html{scroll-behavior:smooth;background:var(--bg)}
-body{min-height:100vh;color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory;background:var(--bg)}
+body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* ── Background Effects ── */
+/* ── BG ── */
 .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 10%,rgba(34,211,238,.08),transparent),
-    radial-gradient(ellipse 60% 50% at 85% 20%,rgba(167,139,250,.06),transparent),
-    radial-gradient(ellipse 70% 40% at 50% 90%,rgba(74,222,128,.05),transparent),
+    radial-gradient(ellipse 80% 60% at 15% 10%,rgba(34,211,238,.06),transparent),
+    radial-gradient(ellipse 60% 50% at 85% 20%,rgba(167,139,250,.04),transparent),
     var(--bg)}
-.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.15;
-  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
-  background-size:60px 60px}
-
-/* ── Scan Line ── */
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.1;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:48px 48px}
 .scanline{position:fixed;left:0;right:0;height:2px;z-index:1;pointer-events:none;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.3;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.2;
   animation:scanMove 4s linear infinite}
 @keyframes scanMove{0%{top:-2px}100%{top:100vh}}
 
-/* ── Page Container ── */
-.page{position:relative;z-index:2}
+/* ── Pages ── */
+.page{position:relative;z-index:2;min-height:100vh;scroll-snap-align:start;
+  display:flex;flex-direction:column;position:relative}
 
-/* ── Nav ── */
-.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
-  padding:12px clamp(16px,4vw,48px);backdrop-filter:blur(20px);
-  background:rgba(9,9,11,.7);border-bottom:1px solid var(--bd)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px}
-.brand-icon{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--violet));
-  display:grid;place-items:center;box-shadow:0 0 24px rgba(34,211,238,.3)}
-.brand-icon svg{width:18px;height:18px;fill:var(--bg)}
-.nav-links{display:flex;gap:6px;font-size:13px;color:var(--tx2)}
-.nav-links a{padding:7px 12px;border-radius:999px;border:1px solid transparent;transition:.2s}
-.nav-links a:hover{border-color:var(--bd);background:rgba(255,255,255,.03);color:var(--tx)}
+/* ── Top Bar (shared) ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:14px clamp(16px,3vw,40px);backdrop-filter:blur(16px);
+  background:rgba(9,9,11,.65);border-bottom:1px solid var(--bd);z-index:10;flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:17px}
+.brand-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--cyan),var(--violet));
+  display:grid;place-items:center;box-shadow:0 0 20px rgba(34,211,238,.25)}
+.brand-icon svg{width:16px;height:16px;fill:var(--bg)}
+.brand .repo{font-size:12px;color:var(--dim);font-weight:600;margin-left:4px;
+  padding:3px 8px;border:1px solid var(--bd);border-radius:6px;font-family:var(--mono)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.page-indicator{font-size:11px;font-family:var(--mono);color:var(--dim);letter-spacing:.05em}
+.btn-replay{padding:6px 12px;border-radius:999px;border:1px solid var(--bd);background:var(--sf2);
+  color:var(--tx2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:.2s}
+.btn-replay:hover{border-color:var(--cyan);color:var(--tx)}
+.btn-replay svg{width:13px;height:13px}
 
-/* ── Hero ── */
-.hero{min-height:calc(100vh - 56px);display:grid;grid-template-columns:1fr 1.2fr;gap:clamp(24px,4vw,64px);
-  align-items:center;padding:clamp(32px,6vw,80px) clamp(16px,5vw,64px)}
-.hero-left{position:relative}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent);background:var(--accent-soft);
-  border:1px solid rgba(34,211,238,.2);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:20px}
-.pulse-dot{width:6px;height:6px;border-radius:999px;background:var(--accent);
-  box-shadow:0 0 0 0 rgba(34,211,238,.5);animation:pulse 2s infinite}
-@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(34,211,238,0)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}}
-h1{font-size:clamp(42px,6.5vw,88px);line-height:.95;letter-spacing:-.06em;max-width:720px}
-h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{margin-top:20px;color:var(--tx2);font-size:clamp(15px,1.8vw,20px);max-width:560px;line-height:1.7}
-.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.btn{border:1px solid var(--bd);background:var(--sf2);border-radius:999px;padding:11px 20px;
-  display:inline-flex;align-items:center;gap:8px;cursor:pointer;transition:.25s;font-size:14px;font-weight:600}
-.btn:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 8px 30px rgba(34,211,238,.12)}
-.btn.primary{background:linear-gradient(135deg,var(--accent2),var(--violet));border-color:rgba(34,211,238,.3);
-  color:var(--bg);font-weight:800;box-shadow:0 12px 40px rgba(34,211,238,.18)}
-.btn svg{width:16px;height:16px}
+/* ── Next Page Button ── */
+.next-btn{position:absolute;bottom:24px;right:clamp(20px,4vw,48px);z-index:20;
+  display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;
+  border:1px solid var(--bd);background:rgba(26,26,30,.85);backdrop-filter:blur(12px);
+  color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;transition:.3s;
+  box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.next-btn:hover{border-color:var(--cyan);color:var(--tx);transform:translateY(-2px);
+  box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.next-btn svg{width:16px;height:16px;transition:.3s}
+.next-btn:hover svg{transform:translateY(2px)}
+.next-btn .key{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--sf3);
+  color:var(--dim);font-family:var(--mono);margin-left:4px}
 
-/* ── Chain Visualization (between hero text and demo) ── */
-.chain-vis{display:flex;align-items:center;gap:0;margin-top:32px;padding:0 4px;opacity:0;transform:translateY(10px);transition:.6s}
-.chain-vis.show{opacity:1;transform:translateY(0)}
-.chain-node{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:12px;font-weight:800;
-  border:1px solid var(--bd);background:var(--sf);position:relative;transition:.4s}
-.chain-node.lit{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 20px rgba(34,211,238,.2);
-  animation:nodeGlow 1.5s ease-in-out infinite alternate}
-@keyframes nodeGlow{0%{box-shadow:0 0 12px rgba(34,211,238,.15)}100%{box-shadow:0 0 28px rgba(34,211,238,.3)}}
-.chain-line{width:32px;height:2px;background:var(--bd);position:relative;overflow:hidden;transition:.4s}
-.chain-line.lit{background:linear-gradient(90deg,var(--accent),var(--violet))}
-.chain-line.lit::after{content:"";position:absolute;top:-1px;width:8px;height:4px;border-radius:2px;
-  background:var(--accent);animation:particleFlow .8s linear infinite}
-@keyframes particleFlow{0%{left:-8px;opacity:0}20%{opacity:1}100%{left:100%;opacity:0}}
-
-/* ── Demo Stage ── */
-.stage{background:var(--sf);border:1px solid var(--bd);border-radius:24px;overflow:hidden;
-  box-shadow:0 24px 80px rgba(0,0,0,.5),0 0 0 1px rgba(34,211,238,.05);position:relative}
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 1: 产品发布作战室 (FULL SCREEN DEMO)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.demo-page .stage-wrap{flex:1;display:flex;align-items:center;justify-content:center;
+  padding:20px clamp(16px,4vw,48px) 64px}
+.stage{width:100%;max-width:860px;background:var(--sf);border:1px solid var(--bd);
+  border-radius:24px;overflow:hidden;
+  box-shadow:0 32px 100px rgba(0,0,0,.55),0 0 0 1px rgba(34,211,238,.04);
+  position:relative;display:flex;flex-direction:column;max-height:calc(100vh - 100px)}
 .stage::before{content:"";position:absolute;inset:-1px;border-radius:24px;pointer-events:none;
-  background:linear-gradient(135deg,rgba(34,211,238,.2),transparent 40%,rgba(167,139,250,.15));
+  background:linear-gradient(135deg,rgba(34,211,238,.18),transparent 40%,rgba(167,139,250,.12));
   mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:1px}
 .stage-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;
-  border-bottom:1px solid var(--bd);background:rgba(9,9,11,.5)}
+  border-bottom:1px solid var(--bd);background:rgba(9,9,11,.5);flex:0 0 auto}
 .dots{display:flex;gap:6px}
 .dots i{width:9px;height:9px;border-radius:999px;background:var(--sf3);border:1px solid var(--bd)}
 .dots i:nth-child(1){background:rgba(251,113,133,.8)}.dots i:nth-child(2){background:rgba(251,191,36,.8)}.dots i:nth-child(3){background:rgba(74,222,128,.8)}
 .stage-title{color:var(--dim);font-size:12px;font-family:var(--mono)}
+.chain-strip{display:flex;align-items:center;gap:0;padding:10px 16px;border-bottom:1px solid var(--bd);
+  background:rgba(9,9,11,.3);flex:0 0 auto;overflow-x:auto}
+.chain-node{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:800;
+  border:1px solid var(--bd);background:var(--sf2);transition:.4s;flex:0 0 auto}
+.chain-node.lit{border-color:var(--cyan);background:var(--cyan-soft);box-shadow:0 0 18px rgba(34,211,238,.2);
+  animation:nodeGlow 1.5s ease-in-out infinite alternate}
+@keyframes nodeGlow{0%{box-shadow:0 0 10px rgba(34,211,238,.12)}100%{box-shadow:0 0 24px rgba(34,211,238,.25)}}
+.chain-line{width:24px;height:2px;background:var(--bd);position:relative;overflow:hidden;transition:.4s;flex:0 0 auto}
+.chain-line.lit{background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.chain-line.lit::after{content:"";position:absolute;top:-1px;width:6px;height:4px;border-radius:2px;
+  background:var(--cyan);animation:particleFlow .7s linear infinite}
+@keyframes particleFlow{0%{left:-6px;opacity:0}20%{opacity:1}100%{left:100%;opacity:0}}
 
-/* ── Chat Area ── */
-.chat{padding:16px;display:flex;flex-direction:column;gap:10px;min-height:480px}
+/* ── Chat ── */
+.chat{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--sf3) transparent}
+.chat::-webkit-scrollbar{width:4px}
+.chat::-webkit-scrollbar-track{background:transparent}
+.chat::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:4px}
 .chat-msg{display:flex;gap:10px;opacity:0;transform:translateY(14px) scale(.97);transition:.5s cubic-bezier(.22,1,.36,1)}
 .chat-msg.in{opacity:1;transform:translateY(0) scale(1)}
-.msg-av{width:34px;height:34px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;
-  font-size:11px;font-weight:800;position:relative;border:1px solid var(--bd);background:var(--sf2)}
+.msg-av{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+  font-size:10px;font-weight:800;position:relative;border:1px solid var(--bd);background:var(--sf2);transition:.3s}
 .msg-av.user{color:var(--bg);background:linear-gradient(135deg,var(--amber),#f59e0b);border-color:rgba(251,191,36,.3)}
-.msg-av.pm{color:var(--accent);border-color:rgba(34,211,238,.3)}
-.msg-av.fe{color:var(--green);border-color:rgba(74,222,128,.3)}
-.msg-av.qa{color:var(--rose);border-color:rgba(251,113,133,.3)}
-.msg-av.ops{color:var(--violet);border-color:rgba(167,139,250,.3)}
-.msg-av.active-agent{animation:agentPulse 1.2s ease-in-out infinite}
-@keyframes agentPulse{0%,100%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 0 8px transparent}}
+.msg-av.pm{color:var(--cyan);border-color:rgba(34,211,238,.25)}
+.msg-av.fe{color:var(--green);border-color:rgba(74,222,128,.25)}
+.msg-av.qa{color:var(--rose);border-color:rgba(251,113,133,.25)}
+.msg-av.ops{color:var(--violet);border-color:rgba(167,139,250,.25)}
+.msg-av.active-agent{animation:avPulse 1s ease-in-out infinite}
+@keyframes avPulse{0%,100%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 0 6px transparent}}
 .msg-body{flex:1;min-width:0}
-.msg-name{font-size:12px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
-.msg-name .tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
-.msg-bubble{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--bd);
-  color:var(--tx2);font-size:13px;line-height:1.6}
-.mention{color:var(--accent);font-weight:700}
-.typing-cursor::after{content:"▊";color:var(--accent);animation:blink .8s steps(2) infinite;font-size:13px}
+.msg-name{font-size:11px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.msg-name .tag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
+.msg-bubble{padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--bd);
+  color:var(--tx2);font-size:13px;line-height:1.65}
+.mention{color:var(--cyan);font-weight:700}
+.typing-cursor::after{content:"▊";color:var(--cyan);animation:blink .7s steps(2) infinite;font-size:12px;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
 
-/* ── Tool Execution Panel ── */
-.tool-panel{margin-top:8px;border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:rgba(9,9,11,.6);
-  opacity:0;transform:scale(.96);transition:.4s}
+/* ── Tool Panel ── */
+.tool-panel{margin-top:6px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;
+  background:rgba(9,9,11,.7);opacity:0;transform:scale(.96);transition:.4s}
 .tool-panel.in{opacity:1;transform:scale(1)}
-.tool-head{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--bd);
-  font-size:11px;font-family:var(--mono);color:var(--dim)}
-.tool-head .icon{width:14px;height:14px;border-radius:3px;display:grid;place-items:center;font-size:8px}
-.tool-status{margin-left:auto;display:flex;align-items:center;gap:6px}
-.tool-status .spinner{width:10px;height:10px;border:2px solid var(--bd);border-top-color:var(--accent);border-radius:999px;animation:spin .7s linear infinite}
+.tool-head{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--bd);
+  font-size:10px;font-family:var(--mono);color:var(--dim)}
+.tool-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px}
+.tool-status .spinner{width:8px;height:8px;border:1.5px solid var(--bd);border-top-color:var(--cyan);
+  border-radius:999px;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .tool-status .check{color:var(--green);font-weight:700}
-.tool-output{padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--dim);max-height:160px;overflow-y:auto}
-.tool-output .cmd{color:var(--amber)}
-.tool-output .ok{color:var(--green)}
-.tool-output .info{color:var(--accent)}
-.tool-output .err{color:var(--rose)}
+.tool-output{padding:8px 10px;font-family:var(--mono);font-size:10.5px;line-height:1.75;color:var(--dim);max-height:130px;overflow-y:auto}
+.tool-output .cmd{color:var(--amber)}.tool-output .ok{color:var(--green)}
+.tool-output .info{color:var(--cyan)}.tool-output .err{color:var(--rose)}
 
-/* ── Handoff Arrow ── */
-.handoff{display:flex;align-items:center;gap:8px;padding:6px 12px;margin:4px 0;
-  border-radius:10px;background:var(--accent-soft);border:1px solid rgba(34,211,238,.15);
-  font-size:11px;font-weight:700;color:var(--accent);opacity:0;transform:translateX(-10px);transition:.4s}
+/* ── Handoff ── */
+.handoff{display:flex;align-items:center;gap:6px;padding:5px 10px;margin:3px 0;
+  border-radius:8px;background:var(--cyan-soft);border:1px solid rgba(34,211,238,.12);
+  font-size:10px;font-weight:700;color:var(--cyan);opacity:0;transform:translateX(-8px);transition:.4s}
 .handoff.in{opacity:1;transform:translateX(0)}
-.handoff svg{width:14px;height:14px;flex:0 0 auto}
-.handoff .flow-dots{display:flex;gap:3px;flex:1}
-.handoff .flow-dots i{width:4px;height:4px;border-radius:999px;background:var(--accent);opacity:.3}
-.handoff .flow-dots i.lit{opacity:1;animation:flowDot .6s ease-in-out}
-@keyframes flowDot{0%{transform:scale(1)}50%{transform:scale(2)}100%{transform:scale(1)}}
+.handoff svg{width:12px;height:12px;flex:0 0 auto}
+.handoff .fdots{display:flex;gap:2px;flex:1}
+.handoff .fdots i{width:3px;height:3px;border-radius:999px;background:var(--cyan);opacity:.25}
+.handoff .fdots i.lit{opacity:1;animation:fdot .5s ease-in-out}
+@keyframes fdot{0%{transform:scale(1)}50%{transform:scale(2)}100%{transform:scale(1)}}
+.handoff .ctx{font-weight:400;color:var(--dim)}
 
-/* ── Section Common ── */
-section{padding:clamp(48px,7vw,100px) clamp(16px,5vw,64px)}
-.section-head{max-width:800px;margin-bottom:32px}
-.kicker{color:var(--accent);font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-weight:700}
-h2{font-size:clamp(30px,4.5vw,60px);line-height:1;letter-spacing:-.04em}
-.section-head p{margin-top:14px;color:var(--tx2);font-size:clamp(15px,1.8vw,19px);max-width:640px}
-
-/* ── Flow Section ── */
-.flow-chain{display:flex;flex-direction:column;gap:0;max-width:700px;margin:0 auto}
-.flow-step{display:grid;grid-template-columns:48px 1fr;gap:16px;padding:20px 0;position:relative}
-.flow-marker{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-family:var(--mono);
-  font-size:13px;font-weight:800;border:1px solid var(--bd);background:var(--sf);transition:.4s;position:relative;z-index:1}
-.flow-marker.lit{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 24px rgba(34,211,238,.15)}
-.flow-connector{position:absolute;left:19px;top:60px;bottom:0;width:2px;background:var(--bd);z-index:0}
-.flow-connector.lit{background:linear-gradient(180deg,var(--accent),var(--violet))}
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 2: 接力流程
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.flow-page .content{flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:40px clamp(16px,6vw,80px) 80px;max-width:900px;margin:0 auto;width:100%}
+.kicker{color:var(--cyan);font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:10px;font-weight:700}
+h2{font-size:clamp(32px,5vw,56px);line-height:1;letter-spacing:-.04em;margin-bottom:32px}
+.flow-chain{display:flex;flex-direction:column;gap:0}
+.flow-step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 0;position:relative}
+.flow-marker{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-family:var(--mono);
+  font-size:12px;font-weight:800;border:1px solid var(--bd);background:var(--sf);transition:.4s;position:relative;z-index:1}
+.flow-marker.lit{border-color:var(--cyan);background:var(--cyan-soft);box-shadow:0 0 20px rgba(34,211,238,.12)}
+.flow-connector{position:absolute;left:17px;top:52px;bottom:0;width:2px;background:var(--bd);z-index:0}
+.flow-connector.lit{background:linear-gradient(180deg,var(--cyan),var(--violet))}
 .flow-step:last-child .flow-connector{display:none}
-.flow-step h3{font-size:17px;margin-bottom:4px;letter-spacing:-.01em}
-.flow-step p{color:var(--tx2);font-size:14px}
-.flow-step .mini-bubble{margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.02);
-  border:1px solid var(--bd);font-size:12px;color:var(--dim);font-family:var(--mono)}
+.flow-step h3{font-size:16px;margin-bottom:3px;letter-spacing:-.01em}
+.flow-step p{color:var(--tx2);font-size:13px}
+.flow-step .mini-bubble{margin-top:6px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.02);
+  border:1px solid var(--bd);font-size:11px;color:var(--dim);font-family:var(--mono)}
 
-/* ── Feature Grid ── */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.feat-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px;
-  position:relative;overflow:hidden;transition:.3s}
-.feat-card:hover{border-color:rgba(34,211,238,.3);transform:translateY(-2px)}
-.feat-card .icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;margin-bottom:14px;border:1px solid var(--bd)}
-.feat-card h3{font-size:16px;margin-bottom:6px;letter-spacing:-.01em}
-.feat-card p{color:var(--tx2);font-size:13px;line-height:1.6}
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 3: 核心能力
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.feat-page .content{flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:40px clamp(16px,6vw,80px) 80px;max-width:960px;margin:0 auto;width:100%}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+.feat-card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:18px;
+  transition:.3s;position:relative;overflow:hidden}
+.feat-card:hover{border-color:rgba(34,211,238,.25);transform:translateY(-1px)}
+.feat-card .icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;margin-bottom:12px;border:1px solid var(--bd)}
+.feat-card h3{font-size:15px;margin-bottom:5px;letter-spacing:-.01em}
+.feat-card p{color:var(--tx2);font-size:12.5px;line-height:1.6}
 
-/* ── CTA ── */
-.cta-section{text-align:center;padding-bottom:80px}
-.cta-panel{max-width:860px;margin:auto;border:1px solid rgba(34,211,238,.2);
-  background:linear-gradient(135deg,rgba(34,211,238,.06),rgba(167,139,250,.04));
-  border-radius:28px;padding:clamp(28px,5vw,56px);box-shadow:0 24px 80px rgba(0,0,0,.3)}
-.cta-panel h2{margin-bottom:16px}
-.cta-panel p{color:var(--tx2);font-size:17px;max-width:600px;margin:0 auto 24px}
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 4: CTA
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.cta-page .content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px clamp(16px,6vw,80px) 80px;text-align:center}
+.cta-panel{max-width:680px;border:1px solid rgba(34,211,238,.18);
+  background:linear-gradient(135deg,rgba(34,211,238,.05),rgba(167,139,250,.03));
+  border-radius:28px;padding:clamp(32px,5vw,56px);box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.cta-panel h2{margin-bottom:14px}
+.cta-panel p{color:var(--tx2);font-size:16px;max-width:520px;margin:0 auto 24px;line-height:1.7}
+.gradient{background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.btn-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--bd);background:var(--sf2);border-radius:999px;padding:10px 18px;
+  display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:.25s;font-size:13px;font-weight:600;color:var(--tx2)}
+.btn:hover{transform:translateY(-2px);border-color:var(--cyan);color:var(--tx);box-shadow:0 8px 30px rgba(34,211,238,.1)}
+.btn.primary{background:linear-gradient(135deg,var(--cyan2),var(--violet));border-color:rgba(34,211,238,.3);
+  color:var(--bg);font-weight:800;box-shadow:0 10px 36px rgba(34,211,238,.15)}
+.btn svg{width:15px;height:15px}
 
 /* ── Reveal ── */
-.reveal{opacity:0;transform:translateY(20px);transition:.6s cubic-bezier(.22,1,.36,1)}
+.reveal{opacity:0;transform:translateY(16px);transition:.6s cubic-bezier(.22,1,.36,1)}
 .reveal.show{opacity:1;transform:translateY(0)}
 
 /* ── Mobile ── */
-@media(max-width:1024px){
-  .hero{grid-template-columns:1fr;gap:32px}
-  .feat-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:640px){
-  .nav{position:relative;padding:10px 14px}
-  .nav-links{display:none}
-  .hero{padding:28px 14px;min-height:auto}
-  h1{font-size:clamp(36px,12vw,52px)}
-  .hero-sub{font-size:15px}
-  .stage{border-radius:18px}
-  .chat{min-height:auto;padding:12px;gap:8px}
-  .msg-av{width:28px;height:28px;border-radius:9px;font-size:9px}
-  .msg-bubble{padding:8px 10px;font-size:12px}
-  .tool-output{font-size:10px}
-  section{padding:40px 14px}
-  .feat-grid{grid-template-columns:1fr}
-  .flow-step{grid-template-columns:36px 1fr;gap:12px}
-  .flow-marker{width:32px;height:32px;font-size:11px}
-  .chain-vis{gap:0;margin-top:20px}
-  .chain-node{width:32px;height:32px;font-size:10px}
+@media(max-width:768px){
+  .stage{max-height:calc(100vh - 80px);border-radius:18px}
+  .chat{padding:10px 12px;gap:6px}
+  .msg-av{width:26px;height:26px;border-radius:8px;font-size:9px}
+  .msg-bubble{padding:7px 9px;font-size:12px}
+  .tool-output{font-size:9.5px}
+  .handoff{font-size:9px;padding:4px 7px}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .flow-step{grid-template-columns:36px 1fr;gap:10px}
+  .chain-strip{padding:8px 12px}
+  .chain-node{width:28px;height:28px;font-size:9px}
   .chain-line{width:16px}
-  .handoff{font-size:10px;padding:4px 8px}
+  .next-btn{bottom:16px;right:16px;padding:8px 14px;font-size:12px}
+  .next-btn .key{display:none}
+}
+@media(max-width:480px){
+  .feat-grid{grid-template-columns:1fr}
+  .brand .repo{display:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -226,422 +239,268 @@ h2{font-size:clamp(30px,4.5vw,60px);line-height:1;letter-spacing:-.04em}
 <div class="bg-grid"></div>
 <div class="scanline"></div>
 
-<div class="page">
-<nav class="nav">
-  <a class="brand" href="#">
-    <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
-    Myna
-  </a>
-  <div class="nav-links">
-    <a href="#demo">实时演示</a><a href="#flow">接力流程</a><a href="#features">核心能力</a><a href="https://github.com/uskyu/Myna">GitHub</a>
-  </div>
-</nav>
-
-<!-- ═══════ HERO ═══════ -->
-<header class="hero" id="demo">
-  <div class="hero-left">
-    <div class="eyebrow"><span class="pulse-dot"></span>AI 群聊协作</div>
-    <h1>多个 AI 在一个房间里<br><span class="gradient">接力干活</span></h1>
-    <p class="hero-sub">@分工 → 自动交接 → 工具可见 → 产物沉淀。不是聊天机器人，是一个会接力的工作房间。</p>
-    
-    <div class="chain-vis" id="chainVis">
-      <div class="chain-node" data-idx="0" style="color:var(--amber)">我</div>
-      <div class="chain-line" data-idx="0"></div>
-      <div class="chain-node" data-idx="1" style="color:var(--accent)">PM</div>
-      <div class="chain-line" data-idx="1"></div>
-      <div class="chain-node" data-idx="2" style="color:var(--green)">FE</div>
-      <div class="chain-line" data-idx="2"></div>
-      <div class="chain-node" data-idx="3" style="color:var(--rose)">QA</div>
-      <div class="chain-line" data-idx="3"></div>
-      <div class="chain-node" data-idx="4" style="color:var(--violet)">OPS</div>
+<!-- ════════ PAGE 1: 产品发布作战室 ════════ -->
+<div class="page demo-page" id="page1">
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
+      Myna
+      <span class="repo">uskyu/Myna</span>
     </div>
-
-    <div class="hero-actions">
-      <button class="btn primary" id="btnPlay">
+    <div class="topbar-right">
+      <span class="page-indicator">1 / 4</span>
+      <button class="btn-replay" id="btnReplay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
-        播放协作接力
+        重播
       </button>
-      <a class="btn" href="#flow">查看核心能力 ↓</a>
     </div>
   </div>
-
-  <div class="stage">
-    <div class="stage-bar">
-      <div class="dots"><i></i><i></i><i></i></div>
-      <div class="stage-title">room://产品发布作战室</div>
-    </div>
-    <div class="chat" id="chatArea">
-      <!-- All messages injected by JS -->
+  <div class="stage-wrap">
+    <div class="stage">
+      <div class="stage-bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="stage-title">room://产品发布作战室</div>
+      </div>
+      <div class="chain-strip" id="chainStrip">
+        <div class="chain-node" data-idx="0" style="color:var(--amber)">我</div>
+        <div class="chain-line" data-idx="0"></div>
+        <div class="chain-node" data-idx="1" style="color:var(--cyan)">PM</div>
+        <div class="chain-line" data-idx="1"></div>
+        <div class="chain-node" data-idx="2" style="color:var(--green)">FE</div>
+        <div class="chain-line" data-idx="2"></div>
+        <div class="chain-node" data-idx="3" style="color:var(--rose)">QA</div>
+        <div class="chain-line" data-idx="3"></div>
+        <div class="chain-node" data-idx="4" style="color:var(--violet)">OPS</div>
+      </div>
+      <div class="chat" id="chatArea"></div>
     </div>
   </div>
-</header>
+  <button class="next-btn" onclick="document.getElementById('page2').scrollIntoView({behavior:'smooth'})">
+    接力流程 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    <span class="key">↓</span>
+  </button>
+</div>
 
-<!-- ═══════ FLOW ═══════ -->
-<section id="flow">
-  <div class="section-head reveal">
+<!-- ════════ PAGE 2: 接力流程 ════════ -->
+<div class="page flow-page" id="page2">
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
+      Myna
+      <span class="repo">uskyu/Myna</span>
+    </div>
+    <span class="page-indicator">2 / 4</span>
+  </div>
+  <div class="content">
     <div class="kicker">Relay Chain</div>
-    <h2>不是聊天，是接力</h2>
-    <p>每个智能体有自己的角色、模型、技能。用户说目标，Myna 自动串起来。</p>
-  </div>
-  <div class="flow-chain">
-    <div class="flow-step reveal">
-      <div class="flow-marker">01</div>
-      <div>
-        <h3>说出目标</h3>
-        <p>一句话描述要做什么，房间上下文自动保留</p>
-        <div class="mini-bubble">@产品经理 拆卖点，@前端 做页面，@测试员 复测</div>
-      </div>
-      <div class="flow-connector"></div>
-    </div>
-    <div class="flow-step reveal">
-      <div class="flow-marker">02</div>
-      <div>
-        <h3>自动分工</h3>
-        <p>@谁谁就上，每个角色用最合适的模型</p>
-        <div class="mini-bubble">PM→Claude Sonnet / FE→GPT-4o / QA→Gemini</div>
-      </div>
-      <div class="flow-connector"></div>
-    </div>
-    <div class="flow-step reveal">
-      <div class="flow-marker">03</div>
-      <div>
-        <h3>交接接力</h3>
-        <p>上一位完成后自动传递上下文给下一位</p>
-        <div class="mini-bubble">⟶ handoff: PM→FE (需求+结构+卖点)</div>
-      </div>
-      <div class="flow-connector"></div>
-    </div>
-    <div class="flow-step reveal">
-      <div class="flow-marker">04</div>
-      <div>
-        <h3>工具执行可见</h3>
-        <p>终端命令、浏览器操作、文件读写实时展示</p>
-        <div class="mini-bubble">$ npm run build ✓ / browser→click("#cta") ✓</div>
-      </div>
-      <div class="flow-connector"></div>
-    </div>
-    <div class="flow-step reveal">
-      <div class="flow-marker">05</div>
-      <div>
-        <h3>产物沉淀</h3>
-        <p>代码、文档、截图、日志留在共享工作空间</p>
-        <div class="mini-bubble">📦 index.html · screenshot.png · deploy.log</div>
-      </div>
+    <h2 class="reveal">不是聊天，是接力</h2>
+    <div class="flow-chain">
+      <div class="flow-step reveal"><div class="flow-marker">01</div><div><h3>说出目标</h3><p>一句话描述要做什么，房间上下文自动保留</p><div class="mini-bubble">@产品经理 拆卖点，@前端 做页面，@测试员 复测</div></div><div class="flow-connector"></div></div>
+      <div class="flow-step reveal"><div class="flow-marker">02</div><div><h3>自动分工</h3><p>@谁谁就上，每个角色用最合适的模型</p><div class="mini-bubble">PM→Claude Sonnet / FE→GPT-4o / QA→Gemini</div></div><div class="flow-connector"></div></div>
+      <div class="flow-step reveal"><div class="flow-marker">03</div><div><h3>交接接力</h3><p>上一位完成后自动传递上下文给下一位</p><div class="mini-bubble">⟶ handoff: PM→FE (需求+结构+卖点)</div></div><div class="flow-connector"></div></div>
+      <div class="flow-step reveal"><div class="flow-marker">04</div><div><h3>工具执行可见</h3><p>终端命令、浏览器操作、文件读写实时展示</p><div class="mini-bubble">$ npm run build ✓ / browser→click("#cta") ✓</div></div><div class="flow-connector"></div></div>
+      <div class="flow-step reveal"><div class="flow-marker">05</div><div><h3>产物沉淀</h3><p>代码、文档、截图、日志留在共享工作空间</p><div class="mini-bubble">📦 index.html · screenshot.png · deploy.log</div></div></div>
     </div>
   </div>
-</section>
+  <button class="next-btn" onclick="document.getElementById('page3').scrollIntoView({behavior:'smooth'})">
+    核心能力 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    <span class="key">↓</span>
+  </button>
+</div>
 
-<!-- ═══════ FEATURES ═══════ -->
-<section id="features">
-  <div class="section-head reveal">
+<!-- ════════ PAGE 3: 核心能力 ════════ -->
+<div class="page feat-page" id="page3">
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
+      Myna
+      <span class="repo">uskyu/Myna</span>
+    </div>
+    <span class="page-indicator">3 / 4</span>
+  </div>
+  <div class="content">
     <div class="kicker">Core Capabilities</div>
-    <h2>为什么不是又一个聊天框</h2>
-  </div>
-  <div class="feat-grid">
-    <div class="feat-card reveal">
-      <div class="icon" style="background:var(--accent-soft);color:var(--accent);border-color:rgba(34,211,238,.2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 0 0-10 0v2a5 5 0 0 0 10 0V8Z"/><path d="M7 10H4"/><path d="M20 10h-3"/><path d="M12 15v6"/></svg>
-      </div>
-      <h3>群聊式协作</h3>
-      <p>一个房间就是一个任务现场，所有 Agent 围绕同一目标工作，不是各自聊天。</p>
-    </div>
-    <div class="feat-card reveal">
-      <div class="icon" style="background:var(--green-soft);color:var(--green);border-color:rgba(74,222,128,.2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>
-      </div>
-      <h3>@精确分工</h3>
-      <p>需要谁就 @ 谁，每个角色绑定不同模型和工具权限，不浪费算力。</p>
-    </div>
-    <div class="feat-card reveal">
-      <div class="icon" style="background:var(--violet-soft);color:var(--violet);border-color:rgba(167,139,250,.2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10"/><path d="m10 3 4 4-4 4"/><path d="M20 17H10"/><path d="m14 13-4 4 4 4"/></svg>
-      </div>
-      <h3>自动交接</h3>
-      <p>上一位完成后自动把上下文交给下一位，链深度可见，不是黑盒。</p>
-    </div>
-    <div class="feat-card reveal">
-      <div class="icon" style="background:var(--amber-soft);color:var(--amber);border-color:rgba(251,191,36,.2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-      </div>
-      <h3>终端 & 浏览器</h3>
-      <p>真实命令执行、浏览器操作、文件读写，不是假装的。</p>
-    </div>
-    <div class="feat-card reveal">
-      <div class="icon" style="background:var(--rose-soft);color:var(--rose);border-color:rgba(251,113,133,.2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v6c0 5 3.4 7.5 8 8 4.6-.5 8-3 8-8V7l-8-4Z"/><path d="m9 12 2 2 4-5"/></svg>
-      </div>
-      <h3>审批机制</h3>
-      <p>auto / confirm / manual 三档执行模式，危险操作可拦截。</p>
-    </div>
-    <div class="feat-card reveal">
-      <div class="icon" style="background:var(--accent-soft);color:var(--accent);border-color:rgba(34,211,238,.2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 20V9"/></svg>
-      </div>
-      <h3>技能沉淀</h3>
-      <p>稳定流程保存为技能，下次同类任务直接加载，越用越强。</p>
+    <h2 class="reveal">为什么不是又一个聊天框</h2>
+    <div class="feat-grid">
+      <div class="feat-card reveal"><div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 0 0-10 0v2a5 5 0 0 0 10 0V8Z"/><path d="M7 10H4"/><path d="M20 10h-3"/><path d="M12 15v6"/></svg></div><h3>群聊式协作</h3><p>一个房间 = 一个任务现场，所有 Agent 围绕同一目标</p></div>
+      <div class="feat-card reveal"><div class="icon" style="background:var(--green-soft);color:var(--green);border-color:rgba(74,222,128,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div><h3>@精确分工</h3><p>需要谁就 @ 谁，不同角色绑定不同模型和工具</p></div>
+      <div class="feat-card reveal"><div class="icon" style="background:var(--violet-soft);color:var(--violet);border-color:rgba(167,139,250,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10"/><path d="m10 3 4 4-4 4"/><path d="M20 17H10"/><path d="m14 13-4 4 4 4"/></svg></div><h3>自动交接</h3><p>完成后自动传递上下文，链深度可见不是黑盒</p></div>
+      <div class="feat-card reveal"><div class="icon" style="background:var(--amber-soft);color:var(--amber);border-color:rgba(251,191,36,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div><h3>终端 & 浏览器</h3><p>真实命令执行、浏览器操作，不是假装的</p></div>
+      <div class="feat-card reveal"><div class="icon" style="background:var(--rose-soft);color:var(--rose);border-color:rgba(251,113,133,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v6c0 5 3.4 7.5 8 8 4.6-.5 8-3 8-8V7l-8-4Z"/><path d="m9 12 2 2 4-5"/></svg></div><h3>审批机制</h3><p>auto / confirm / manual 三档，危险操作可拦截</p></div>
+      <div class="feat-card reveal"><div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 20V9"/></svg></div><h3>技能沉淀</h3><p>稳定流程保存为技能，下次直接加载越用越强</p></div>
     </div>
   </div>
-</section>
+  <button class="next-btn" onclick="document.getElementById('page4').scrollIntoView({behavior:'smooth'})">
+    开始使用 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    <span class="key">↓</span>
+  </button>
+</div>
 
-<!-- ═══════ CTA ═══════ -->
-<section class="cta-section">
-  <div class="cta-panel reveal">
-    <h2>把多个 AI 变成一支<span class="gradient">接力团队</span></h2>
-    <p>私有部署，真实工具执行，记忆和技能可复用。开发、测试、运维 Agent 在一个房间接力干活。</p>
-    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
-      <a class="btn primary" href="https://github.com/uskyu/Myna" target="_blank">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10Z"/></svg>
-        GitHub 开源
-      </a>
-      <button class="btn" id="btnReplay">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
-        重新播放
-      </button>
+<!-- ════════ PAGE 4: CTA ════════ -->
+<div class="page cta-page" id="page4">
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-icon"><svg viewBox="0 0 24 24"><path d="M4 13c2-8 9-13 19-12-2 2-3 4-1 6 3 .5 4 2 5 4-3-1-5-.5-8 1-3 2-5 6-10 6-3 0-4-2-5-5Z"/></svg></span>
+      Myna
+      <span class="repo">uskyu/Myna</span>
+    </div>
+    <span class="page-indicator">4 / 4</span>
+  </div>
+  <div class="content">
+    <div class="cta-panel reveal">
+      <h2>把多个 AI 变成一支<span class="gradient">接力团队</span></h2>
+      <p>私有部署，真实工具执行，记忆和技能可复用。开发、测试、运维 Agent 在一个房间接力干活。</p>
+      <div class="btn-row">
+        <a class="btn primary" href="https://github.com/uskyu/Myna" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10Z"/></svg>
+          GitHub 开源
+        </a>
+        <button class="btn" onclick="document.getElementById('page1').scrollIntoView({behavior:'smooth'});setTimeout(play,600)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+          重新播放
+        </button>
+      </div>
     </div>
   </div>
-</section>
 </div>
 
 <script>
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-// ── Message Script ──
-const script = [
-  { agent:'user', name:'我', cls:'user', text:'我要做一个产品官网改版。@产品经理 拆卖点，@前端 做页面，@测试员 复测，@运维 检查部署。' },
-  { agent:'pm', name:'产品经理', cls:'pm', tag:'分析中', tagColor:'var(--accent-soft)', tagText:'var(--accent)',
-    text:'收到。需求拆解完成——页面结构3大模块，核心卖点5个，用户画像2类。现在交接给前端。',
-    handoff:{ from:'PM', to:'FE', context:'需求文档 + 页面结构 + 卖点优先级' }
-  },
-  { agent:'fe', name:'前端工程师', cls:'fe', tag:'编码中', tagColor:'var(--green-soft)', tagText:'var(--green)',
-    text:'开始实现。修改 Hero 区域、产品特性网格、CTA 模块，同步桌面端和移动端响应式。',
-    tool:{ title:'终端执行', lines:[
-      { type:'cmd', text:'$ git checkout -b feature/redesign' },
-      { type:'info', text:'Switched to new branch feature/redesign' },
-      { type:'cmd', text:'$ npm run build' },
-      { type:'ok', text:'✓ Build completed in 3.2s' },
-      { type:'cmd', text:'$ browser.open("http://localhost:3456")' },
-      { type:'ok', text:'✓ Page loaded, screenshot captured' },
-    ]},
-    handoff:{ from:'FE', to:'QA', context:'代码改动 + 构建产物 + 截图' }
-  },
-  { agent:'qa', name:'测试员', cls:'qa', tag:'测试中', tagColor:'var(--rose-soft)', tagText:'var(--rose)',
-    text:'执行验收测试。检查桌面布局、移动端适配、交互逻辑、控制台错误。',
-    tool:{ title:'测试执行', lines:[
-      { type:'info', text:'▶ 桌面布局: Hero 区域 ✓' },
-      { type:'info', text:'▶ 桌面布局: 特性网格 ✓' },
-      { type:'info', text:'▶ 移动端: 响应式断点 ✓' },
-      { type:'err', text:'✗ CTA 按钮 hover 无反馈 → 已自动修复' },
-      { type:'ok', text:'✓ 全部 12 项测试通过' },
-    ]},
-    handoff:{ from:'QA', to:'OPS', context:'测试报告 + 修复补丁 + 验收结论' }
-  },
-  { agent:'ops', name:'运维', cls:'ops', tag:'部署中', tagColor:'var(--violet-soft)', tagText:'var(--violet)',
-    text:'部署检查。服务状态、页面可访问性、SSL、CDN 缓存全部确认。',
-    tool:{ title:'部署验证', lines:[
-      { type:'cmd', text:'$ kubectl get pods -n myna' },
-      { type:'ok', text:'✓ 3/3 pods running' },
-      { type:'cmd', text:'$ curl -s -o /dev/null -w "%{http_code}" https://myna.app' },
-      { type:'ok', text:'✓ HTTP 200' },
-      { type:'ok', text:'✓ 部署完成，产物已沉淀到共享工作空间' },
-    ]}
-  }
+// ── Script ──
+const script=[
+  {agent:'user',name:'我',cls:'user',text:'我要做一个产品官网改版。@产品经理 拆卖点，@前端 做页面，@测试员 复测，@运维 检查部署。'},
+  {agent:'pm',name:'产品经理',cls:'pm',tag:'分析中',tagBg:'var(--cyan-soft)',tagFg:'var(--cyan)',
+   text:'收到。需求拆解完成——页面结构3大模块，核心卖点5个，用户画像2类。现在交接给前端。',
+   handoff:{from:'PM',to:'FE',ctx:'需求文档 + 页面结构 + 卖点优先级'}},
+  {agent:'fe',name:'前端工程师',cls:'fe',tag:'编码中',tagBg:'var(--green-soft)',tagFg:'var(--green)',
+   text:'开始实现。修改 Hero 区域、产品特性网格、CTA 模块，同步桌面和移动端响应式。',
+   tool:{title:'终端执行',lines:[
+     {t:'cmd',s:'$ git checkout -b feature/redesign'},
+     {t:'info',s:'Switched to new branch feature/redesign'},
+     {t:'cmd',s:'$ npm run build'},
+     {t:'ok',s:'✓ Build completed in 3.2s'},
+     {t:'cmd',s:'$ browser.open("http://localhost:3456")'},
+     {t:'ok',s:'✓ Page loaded, screenshot captured'}]},
+   handoff:{from:'FE',to:'QA',ctx:'代码改动 + 构建产物 + 截图'}},
+  {agent:'qa',name:'测试员',cls:'qa',tag:'测试中',tagBg:'var(--rose-soft)',tagFg:'var(--rose)',
+   text:'执行验收测试。桌面布局、移动端适配、交互逻辑、控制台错误全查。',
+   tool:{title:'测试执行',lines:[
+     {t:'info',s:'▶ 桌面布局: Hero ✓'},
+     {t:'info',s:'▶ 桌面布局: 特性网格 ✓'},
+     {t:'info',s:'▶ 移动端: 响应式断点 ✓'},
+     {t:'err',s:'✗ CTA 按钮 hover 无反馈 → 已自动修复'},
+     {t:'ok',s:'✓ 全部 12 项测试通过'}]},
+   handoff:{from:'QA',to:'OPS',ctx:'测试报告 + 修复补丁 + 验收结论'}},
+  {agent:'ops',name:'运维',cls:'ops',tag:'部署中',tagBg:'var(--violet-soft)',tagFg:'var(--violet)',
+   text:'部署检查。服务状态、页面可访问性、SSL、CDN 缓存全部确认。',
+   tool:{title:'部署验证',lines:[
+     {t:'cmd',s:'$ kubectl get pods -n myna'},
+     {t:'ok',s:'✓ 3/3 pods running'},
+     {t:'cmd',s:'$ curl -s -o /dev/null -w "%{http_code}" https://myna.app'},
+     {t:'ok',s:'✓ HTTP 200'},
+     {t:'ok',s:'✓ 部署完成，产物已沉淀到共享工作空间'}]}}
 ];
 
-let runToken = 0;
+let runToken=0;
 
-function createMsgEl(item, idx) {
-  const el = document.createElement('div');
-  el.className = 'chat-msg';
-  el.dataset.idx = idx;
-
-  let tagHTML = '';
-  if (item.tag) {
-    tagHTML = `<span class="tag" style="background:${item.tagColor};color:${item.tagText}">${item.tag}</span>`;
+function mkMsg(item,i){
+  const el=document.createElement('div');el.className='chat-msg';el.dataset.idx=i;
+  let tagH=item.tag?`<span class="tag" style="background:${item.tagBg};color:${item.tagFg}">${item.tag}</span>`:'';
+  let toolH='';
+  if(item.tool){
+    const lines=item.tool.lines.map(l=>`<div class="${l.t}">${l.s}</div>`).join('');
+    toolH=`<div class="tool-panel" data-ti="${i}"><div class="tool-head">⌘ ${item.tool.title}<div class="tool-status"><span class="spinner"></span><span class="check" style="display:none">✓</span></div></div><div class="tool-output">${lines}</div></div>`;
   }
-
-  let toolHTML = '';
-  if (item.tool) {
-    const lines = item.tool.lines.map(l =>
-      `<div class="${l.type}">${l.text}</div>`
-    ).join('');
-    toolHTML = `
-      <div class="tool-panel" data-tool-idx="${idx}">
-        <div class="tool-head">
-          <span class="icon" style="background:var(--sf3)">⌘</span>
-          ${item.tool.title}
-          <div class="tool-status"><span class="spinner"></span><span class="check" style="display:none">✓</span></div>
-        </div>
-        <div class="tool-output">${lines}</div>
-      </div>`;
+  let hoH='';
+  if(item.handoff){
+    const ds=Array(6).fill('<i></i>').join('');
+    hoH=`<div class="handoff" data-hi="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>${item.handoff.from} → ${item.handoff.to}</span><span class="fdots">${ds}</span><span class="ctx">${item.handoff.ctx}</span></div>`;
   }
-
-  let handoffHTML = '';
-  if (item.handoff) {
-    const dots = Array(6).fill('<i></i>').join('');
-    handoffHTML = `
-      <div class="handoff" data-handoff-idx="${idx}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        <span>${item.handoff.from} → ${item.handoff.to}</span>
-        <span class="flow-dots">${dots}</span>
-        <span style="font-weight:400;color:var(--dim)">${item.handoff.context}</span>
-      </div>`;
-  }
-
-  el.innerHTML = `
-    <div class="msg-av ${item.cls}" data-av-idx="${idx}">${item.name.charAt(0)}</div>
-    <div class="msg-body">
-      <div class="msg-name">${item.name}${tagHTML}</div>
-      <div class="msg-bubble"><span class="msg-text" data-text-idx="${idx}"></span><span class="typing-cursor" data-cursor-idx="${idx}"></span></div>
-      ${toolHTML}
-      ${handoffHTML}
-    </div>`;
+  el.innerHTML=`<div class="msg-av ${item.cls}" data-ai="${i}">${item.name[0]}</div><div class="msg-body"><div class="msg-name">${item.name}${tagH}</div><div class="msg-bubble"><span class="mt" data-mi="${i}"></span><span class="typing-cursor" data-ci="${i}"></span></div>${toolH}${hoH}</div>`;
   return el;
 }
 
-async function typeText(el, text, token, speed = 18) {
-  for (let i = 0; i < text.length; i++) {
-    if (token !== runToken) return false;
-    el.textContent = text.slice(0, i + 1);
-    await sleep(speed);
-  }
+async function typeEl(el,text,tk,spd=14){
+  for(let i=0;i<text.length;i++){if(tk!==runToken)return false;el.textContent=text.slice(0,i+1);await sleep(spd)}
   return true;
 }
 
-async function animateToolIn(idx, token) {
-  const panel = document.querySelector(`.tool-panel[data-tool-idx="${idx}"]`);
-  if (!panel || token !== runToken) return;
-  panel.classList.add('in');
-  
-  // Animate lines appearing one by one
-  const lines = panel.querySelectorAll('.tool-output > div');
-  lines.forEach(l => l.style.opacity = '0');
-  for (let i = 0; i < lines.length; i++) {
-    if (token !== runToken) return;
-    await sleep(200);
-    lines[i].style.opacity = '1';
-    lines[i].style.transition = '.3s';
-  }
-  
-  // Mark done
+async function animTool(i,tk){
+  const p=document.querySelector(`.tool-panel[data-ti="${i}"]`);if(!p||tk!==runToken)return;
+  p.classList.add('in');
+  const ls=p.querySelectorAll('.tool-output > div');ls.forEach(l=>l.style.opacity='0');
+  for(let j=0;j<ls.length;j++){if(tk!==runToken)return;await sleep(160);ls[j].style.opacity='1';ls[j].style.transition='.25s'}
   await sleep(200);
-  const spinner = panel.querySelector('.spinner');
-  const check = panel.querySelector('.check');
-  if (spinner) spinner.style.display = 'none';
-  if (check) check.style.display = 'inline';
+  const sp=p.querySelector('.spinner'),ck=p.querySelector('.check');
+  if(sp)sp.style.display='none';if(ck)ck.style.display='inline';
 }
 
-async function animateHandoff(idx, token) {
-  const handoff = document.querySelector(`.handoff[data-handoff-idx="${idx}"]`);
-  if (!handoff || token !== runToken) return;
-  handoff.classList.add('in');
-  
-  // Animate flow dots one by one
-  const dots = handoff.querySelectorAll('.flow-dots i');
-  for (let i = 0; i < dots.length; i++) {
-    if (token !== runToken) return;
-    await sleep(100);
-    dots[i].classList.add('lit');
+async function animHO(i,tk){
+  const h=document.querySelector(`.handoff[data-hi="${i}"]`);if(!h||tk!==runToken)return;
+  h.classList.add('in');
+  const ds=h.querySelectorAll('.fdots i');
+  for(let j=0;j<ds.length;j++){if(tk!==runToken)return;await sleep(80);ds[j].classList.add('lit')}
+}
+
+async function play(){
+  const tk=++runToken;const area=$('#chatArea');area.innerHTML='';
+  $$('.chain-node').forEach(n=>n.classList.remove('lit'));
+  $$('.chain-line').forEach(l=>l.classList.remove('lit'));
+  await sleep(200);
+  script.forEach((item,i)=>{const el=mkMsg(item,i);area.appendChild(el)});
+  for(let i=0;i<script.length;i++){
+    if(tk!==runToken)return;const item=script[i];const msg=area.querySelector(`.chat-msg[data-idx="${i}"]`);
+    // chain
+    const nodes=$$('.chain-node'),lines=$$('.chain-line');
+    nodes.forEach(n=>n.classList.remove('lit'));
+    if(i<nodes.length)nodes[i].classList.add('lit');
+    if(i>0&&i-1<lines.length)lines[i-1].classList.add('lit');
+    // av pulse
+    const av=msg.querySelector('.msg-av');if(av&&i>0)av.classList.add('active-agent');
+    // slide in
+    msg.classList.add('in');await sleep(120);
+    // type
+    const txt=msg.querySelector(`.mt[data-mi="${i}"]`),cur=msg.querySelector(`.typing-cursor[data-ci="${i}"]`);
+    const ok=await typeEl(txt,item.text,tk,i===0?10:13);if(!ok)return;
+    if(cur)cur.style.display='none';if(av)av.classList.remove('active-agent');
+    await sleep(250);
+    if(item.tool){await animTool(i,tk);await sleep(250)}
+    if(item.handoff){await animHO(i,tk);await sleep(350)}
   }
 }
 
-async function animateChain(idx, token) {
-  const nodes = $$('.chain-node');
-  const lines = $$('.chain-line');
-  
-  // Light up current node
-  if (idx < nodes.length) {
-    nodes.forEach(n => n.classList.remove('lit'));
-    nodes[idx].classList.add('lit');
-  }
-  // Light up line from previous
-  if (idx > 0 && idx - 1 < lines.length) {
-    lines[idx - 1].classList.add('lit');
-  }
-}
+$('#btnReplay').addEventListener('click',play);
 
-async function play() {
-  const token = ++runToken;
-  const area = $('#chatArea');
-  
-  // Reset
-  area.innerHTML = '';
-  $$('.chain-node').forEach(n => n.classList.remove('lit'));
-  $$('.chain-line').forEach(l => l.classList.remove('lit'));
-  $('#chainVis').classList.remove('show');
-  
-  await sleep(300);
-  $('#chainVis').classList.add('show');
-  await sleep(400);
-  
-  // Pre-create all message elements (hidden)
-  script.forEach((item, i) => {
-    const el = createMsgEl(item, i);
-    area.appendChild(el);
-  });
-  
-  // Animate each message
-  for (let i = 0; i < script.length; i++) {
-    if (token !== runToken) return;
-    const item = script[i];
-    const msgEl = area.querySelector(`.chat-msg[data-idx="${i}"]`);
-    
-    // Activate chain node
-    animateChain(i, token);
-    
-    // Activate avatar pulse
-    const av = msgEl.querySelector('.msg-av');
-    if (av && i > 0) av.classList.add('active-agent');
-    
-    // Slide in message
-    msgEl.classList.add('in');
-    await sleep(150);
-    
-    // Type text
-    const textEl = msgEl.querySelector(`.msg-text[data-text-idx="${i}"]`);
-    const cursorEl = msgEl.querySelector(`.typing-cursor[data-cursor-idx="${i}"]`);
-    const speed = i === 0 ? 12 : 16; // User message types faster
-    const done = await typeText(textEl, item.text, token, speed);
-    if (!done) return;
-    
-    // Remove cursor
-    if (cursorEl) cursorEl.style.display = 'none';
-    
-    // Remove avatar pulse
-    if (av) av.classList.remove('active-agent');
-    
-    await sleep(300);
-    
-    // Animate tool panel if present
-    if (item.tool) {
-      await animateToolIn(i, token);
-      await sleep(300);
-    }
-    
-    // Animate handoff if present
-    if (item.handoff) {
-      await animateHandoff(i, token);
-      await sleep(400);
-    }
-  }
-}
+// Scroll reveal
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')})},{threshold:.15});
+$$('.reveal').forEach(el=>io.observe(el));
 
-// ── Event Listeners ──
-$('#btnPlay').addEventListener('click', play);
-$('#btnReplay').addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  setTimeout(play, 400);
+// Keyboard navigation
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){
+    e.preventDefault();
+    const pages=['page1','page2','page3','page4'];
+    const current=pages.findIndex(id=>{
+      const el=document.getElementById(id);
+      const r=el.getBoundingClientRect();
+      return r.top>=-100&&r.top<window.innerHeight/2;
+    });
+    if(current<pages.length-1)document.getElementById(pages[current+1]).scrollIntoView({behavior:'smooth'});
+  }
+  if(e.key==='ArrowUp'||e.key==='PageUp'){
+    const pages=['page1','page2','page3','page4'];
+    const current=pages.findIndex(id=>{
+      const el=document.getElementById(id);
+      const r=el.getBoundingClientRect();
+      return r.top>=-100&&r.top<window.innerHeight/2;
+    });
+    if(current>0)document.getElementById(pages[current-1]).scrollIntoView({behavior:'smooth'});
+  }
 });
 
-// ── Scroll Reveal ──
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
-}, { threshold: .12 });
-$$('.reveal').forEach(el => io.observe(el));
-
-// ── Auto-play on load ──
-window.addEventListener('load', () => setTimeout(play, 600));
+// Auto play
+window.addEventListener('load',()=>setTimeout(play,500));
 </script>
 </body>
 </html>
