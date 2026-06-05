@@ -56,19 +56,19 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 .dots i{width:9px;height:9px;border-radius:999px;background:var(--sf3);border:1px solid var(--bd)}
 .dots i:nth-child(1){background:rgba(251,113,133,.8)}.dots i:nth-child(2){background:rgba(251,191,36,.8)}.dots i:nth-child(3){background:rgba(74,222,128,.8)}
 .stage-title{color:var(--dim);font-size:12px;font-family:var(--mono)}
-.chain-strip{display:flex;align-items:center;gap:0;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(9,9,11,.3);flex:0 0 auto;overflow-x:auto}
-.c-node{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:800;border:1px solid var(--bd);background:var(--sf2);transition:.4s;flex:0 0 auto}
-.c-node.lit{border-color:var(--cyan);background:var(--cyan-s);box-shadow:0 0 18px rgba(34,211,238,.2);animation:nGlow 1.5s ease-in-out infinite alternate}
-@keyframes nGlow{0%{box-shadow:0 0 10px rgba(34,211,238,.12)}100%{box-shadow:0 0 24px rgba(34,211,238,.25)}}
-.c-line{width:24px;height:2px;background:var(--bd);position:relative;overflow:hidden;transition:.4s;flex:0 0 auto}
+.chain-strip{display:flex;align-items:center;gap:0;padding:7px 14px;border-bottom:1px solid var(--bd);background:rgba(9,9,11,.3);flex:0 0 auto;overflow-x:auto}
+.c-node{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:9px;font-weight:800;border:1px solid var(--bd);background:var(--sf2);transition:.4s;flex:0 0 auto}
+.c-node.lit{border-color:var(--cyan);background:var(--cyan-s);box-shadow:0 0 14px rgba(34,211,238,.2);animation:nGlow 1.5s ease-in-out infinite alternate}
+@keyframes nGlow{0%{box-shadow:0 0 8px rgba(34,211,238,.1)}100%{box-shadow:0 0 20px rgba(34,211,238,.2)}}
+.c-line{width:18px;height:2px;background:var(--bd);position:relative;overflow:hidden;transition:.4s;flex:0 0 auto}
 .c-line.lit{background:linear-gradient(90deg,var(--cyan),var(--violet))}
 .c-line.lit::after{content:"";position:absolute;top:-1px;width:6px;height:4px;border-radius:2px;background:var(--cyan);animation:pFlow .7s linear infinite}
 @keyframes pFlow{0%{left:-6px;opacity:0}20%{opacity:1}100%{left:100%;opacity:0}}
 
 /* Chat: messages grow upward, always visible from bottom */
-.chat{flex:1;padding:14px 16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--sf3) transparent}
+.chat{flex:1;padding:10px 14px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--sf3) transparent}
 .chat::-webkit-scrollbar{width:4px}.chat::-webkit-scrollbar-track{background:transparent}.chat::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:4px}
-.chat-inner{display:flex;flex-direction:column;gap:8px}
+.chat-inner{display:flex;flex-direction:column;gap:5px}
 .chat-msg{display:flex;gap:10px;opacity:0;transform:translateY(14px) scale(.97);transition:.5s cubic-bezier(.22,1,.36,1)}
 .chat-msg.in{opacity:1;transform:translateY(0) scale(1)}
 .msg-av{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;font-size:10px;font-weight:800;position:relative;border:1px solid var(--bd);background:var(--sf2);transition:.3s}
@@ -82,7 +82,7 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 .msg-body{flex:1;min-width:0}
 .msg-name{font-size:11px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .msg-name .tag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
-.msg-bubble{padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--bd);color:var(--tx2);font-size:12.5px;line-height:1.55}
+.msg-bubble{padding:6px 9px;border-radius:10px;background:rgba(255,255,255,.025);border:1px solid var(--bd);color:var(--tx2);font-size:12px;line-height:1.5}
 .mention{color:var(--cyan);font-weight:700}
 .cursor::after{content:"▊";color:var(--cyan);animation:blink .7s steps(2) infinite;font-size:12px;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
@@ -95,7 +95,7 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 .tool-status .ck{color:var(--green);font-weight:700}
 .tool-output{padding:5px 8px;font-family:var(--mono);font-size:9.5px;line-height:1.6;color:var(--dim);max-height:90px;overflow-y:auto}
 .tool-output .cmd{color:var(--amber)}.tool-output .ok{color:var(--green)}.tool-output .info{color:var(--cyan)}.tool-output .err{color:var(--rose)}
-.handoff{display:flex;align-items:center;gap:6px;padding:5px 10px;margin:3px 0;border-radius:8px;background:var(--cyan-s);border:1px solid rgba(34,211,238,.12);font-size:10px;font-weight:700;color:var(--cyan);opacity:0;transform:translateX(-8px);transition:.4s}
+.handoff{display:flex;align-items:center;gap:5px;padding:3px 8px;margin:1px 0;border-radius:7px;background:var(--cyan-s);border:1px solid rgba(34,211,238,.12);font-size:9px;font-weight:700;color:var(--cyan);opacity:0;transform:translateX(-8px);transition:.4s}
 .handoff.in{opacity:1;transform:translateX(0)}
 .handoff svg{width:12px;height:12px;flex:0 0 auto}
 .handoff .fd{display:flex;gap:2px;flex:1}
