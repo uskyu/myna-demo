@@ -82,18 +82,18 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 .msg-body{flex:1;min-width:0}
 .msg-name{font-size:11px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .msg-name .tag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
-.msg-bubble{padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--bd);color:var(--tx2);font-size:13px;line-height:1.65}
+.msg-bubble{padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.025);border:1px solid var(--bd);color:var(--tx2);font-size:12.5px;line-height:1.55}
 .mention{color:var(--cyan);font-weight:700}
 .cursor::after{content:"▊";color:var(--cyan);animation:blink .7s steps(2) infinite;font-size:12px;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
-.tool-panel{margin-top:6px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:rgba(9,9,11,.7);opacity:0;transform:scale(.96);transition:.4s}
+.tool-panel{margin-top:4px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:rgba(9,9,11,.7);opacity:0;transform:scale(.96);transition:.4s}
 .tool-panel.in{opacity:1;transform:scale(1)}
-.tool-head{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--bd);font-size:10px;font-family:var(--mono);color:var(--dim)}
-.tool-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px}
-.spinner{width:8px;height:8px;border:1.5px solid var(--bd);border-top-color:var(--cyan);border-radius:999px;animation:spin .7s linear infinite}
+.tool-head{display:flex;align-items:center;gap:6px;padding:4px 8px;border-bottom:1px solid var(--bd);font-size:9px;font-family:var(--mono);color:var(--dim)}
+.tool-status{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:9px}
+.spinner{width:7px;height:7px;border:1.5px solid var(--bd);border-top-color:var(--cyan);border-radius:999px;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .tool-status .ck{color:var(--green);font-weight:700}
-.tool-output{padding:8px 10px;font-family:var(--mono);font-size:10.5px;line-height:1.75;color:var(--dim);max-height:130px;overflow-y:auto}
+.tool-output{padding:5px 8px;font-family:var(--mono);font-size:9.5px;line-height:1.6;color:var(--dim);max-height:90px;overflow-y:auto}
 .tool-output .cmd{color:var(--amber)}.tool-output .ok{color:var(--green)}.tool-output .info{color:var(--cyan)}.tool-output .err{color:var(--rose)}
 .handoff{display:flex;align-items:center;gap:6px;padding:5px 10px;margin:3px 0;border-radius:8px;background:var(--cyan-s);border:1px solid rgba(34,211,238,.12);font-size:10px;font-weight:700;color:var(--cyan);opacity:0;transform:translateX(-8px);transition:.4s}
 .handoff.in{opacity:1;transform:translateX(0)}
@@ -292,10 +292,10 @@ function goPage(id){document.getElementById(id).scrollIntoView({behavior:'smooth
 // ═══ CHAT DEMO ═══
 const script=[
   {agent:'user',name:'我',cls:'user',text:'我要做一个产品官网改版。@产品经理 拆卖点，@前端 做页面，@测试员 复测，@运维 检查部署。'},
-  {agent:'pm',name:'产品经理',cls:'pm',tag:'分析中',tagBg:'var(--cyan-s)',tagFg:'var(--cyan)',text:'收到。需求拆解完成——页面结构3大模块，核心卖点5个，用户画像2类。现在交接给前端。',handoff:{from:'PM',to:'FE',ctx:'需求文档 + 页面结构 + 卖点优先级'}},
-  {agent:'fe',name:'前端工程师',cls:'fe',tag:'编码中',tagBg:'var(--green-s)',tagFg:'var(--green)',text:'开始实现。修改 Hero 区域、产品特性网格、CTA 模块，同步桌面和移动端响应式。',tool:{title:'终端执行',lines:[{t:'cmd',s:'$ git checkout -b feature/redesign'},{t:'info',s:'Switched to new branch feature/redesign'},{t:'cmd',s:'$ npm run build'},{t:'ok',s:'✓ Build completed in 3.2s'},{t:'cmd',s:'$ browser.open("http://localhost:3456")'},{t:'ok',s:'✓ Page loaded, screenshot captured'}]},handoff:{from:'FE',to:'QA',ctx:'代码改动 + 构建产物 + 截图'}},
-  {agent:'qa',name:'测试员',cls:'qa',tag:'测试中',tagBg:'var(--rose-s)',tagFg:'var(--rose)',text:'执行验收测试。桌面布局、移动端适配、交互逻辑、控制台错误全查。',tool:{title:'测试执行',lines:[{t:'info',s:'▶ 桌面布局: Hero ✓'},{t:'info',s:'▶ 桌面布局: 特性网格 ✓'},{t:'info',s:'▶ 移动端: 响应式断点 ✓'},{t:'err',s:'✗ CTA 按钮 hover 无反馈 → 已自动修复'},{t:'ok',s:'✓ 全部 12 项测试通过'}]},handoff:{from:'QA',to:'OPS',ctx:'测试报告 + 修复补丁 + 验收结论'}},
-  {agent:'ops',name:'运维',cls:'ops',tag:'部署中',tagBg:'var(--violet-s)',tagFg:'var(--violet)',text:'部署检查。服务状态、页面可访问性、SSL、CDN 缓存全部确认。',tool:{title:'部署验证',lines:[{t:'cmd',s:'$ kubectl get pods -n myna'},{t:'ok',s:'✓ 3/3 pods running'},{t:'cmd',s:'$ curl -s -o /dev/null -w "%{http_code}" https://myna.app'},{t:'ok',s:'✓ HTTP 200'},{t:'ok',s:'✓ 部署完成，产物已沉淀到共享工作空间'}]}}
+  {agent:'pm',name:'产品经理',cls:'pm',tag:'分析中',tagBg:'var(--cyan-s)',tagFg:'var(--cyan)',text:'需求拆解完成。3大模块、5个核心卖点、2类用户画像。交接前端。',handoff:{from:'PM',to:'FE',ctx:'需求文档 + 页面结构 + 卖点优先级'}},
+  {agent:'fe',name:'前端工程师',cls:'fe',tag:'编码中',tagBg:'var(--green-s)',tagFg:'var(--green)',text:'实现完成。Hero + 特性网格 + CTA，桌面移动端同步。',tool:{title:'终端执行',lines:[{t:'cmd',s:'$ git checkout -b feature/redesign'},{t:'ok',s:'✓ branch created'},{t:'cmd',s:'$ npm run build'},{t:'ok',s:'✓ Build 3.2s'},{t:'cmd',s:'$ browser.open("localhost:3456")'},{t:'ok',s:'✓ screenshot captured'}]},handoff:{from:'FE',to:'QA',ctx:'代码改动 + 构建产物 + 截图'}},
+  {agent:'qa',name:'测试员',cls:'qa',tag:'测试中',tagBg:'var(--rose-s)',tagFg:'var(--rose)',text:'验收完成。12项测试全部通过，1项自动修复。',tool:{title:'测试执行',lines:[{t:'info',s:'▶ 桌面: Hero ✓ 特性 ✓'},{t:'info',s:'▶ 移动端: 响应式 ✓'},{t:'err',s:'✗ CTA hover无反馈 → 自动修复'},{t:'ok',s:'✓ 12/12 通过'}]},handoff:{from:'QA',to:'OPS',ctx:'测试报告 + 修复补丁 + 验收结论'}},
+  {agent:'ops',name:'运维',cls:'ops',tag:'部署中',tagBg:'var(--violet-s)',tagFg:'var(--violet)',text:'部署完成。服务正常，页面可访问，SSL/CDN 已确认。',tool:{title:'部署验证',lines:[{t:'cmd',s:'$ kubectl get pods'},{t:'ok',s:'✓ 3/3 running'},{t:'cmd',s:'$ curl https://myna.app'},{t:'ok',s:'✓ HTTP 200 · 部署完成'}]}}
 ];
 
 let runToken=0, userScrolled=false;
