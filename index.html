@@ -323,20 +323,17 @@ async function play(){
   const tk=++runToken;const inner=$('#chatInner');inner.innerHTML='';userScrolled=false;
   $$('.c-node').forEach(n=>n.classList.remove('lit'));$$('.c-line').forEach(l=>l.classList.remove('lit'));
   await sleep(200);
-  script.forEach((item,i)=>{const el=mkMsg(item,i);inner.appendChild(el)});
-  // Force layout then scroll to bottom so first messages are at bottom
-  void inner.offsetHeight;
-  chatEl.scrollTop=chatEl.scrollHeight;
-  await sleep(300);
   for(let i=0;i<script.length;i++){
-    if(tk!==runToken)return;const msg=inner.querySelector(`.chat-msg[data-idx="${i}"]`);
+    if(tk!==runToken)return;
+    // Append message one by one (not pre-create all)
+    const el=mkMsg(script[i],i);inner.appendChild(el);
     const nodes=$$('.c-node'),lines=$$('.c-line');
     nodes.forEach(n=>n.classList.remove('lit'));
     if(i<nodes.length)nodes[i].classList.add('lit');
     if(i>0&&i-1<lines.length)lines[i-1].classList.add('lit');
-    const av=msg.querySelector('.msg-av');if(av&&i>0)av.classList.add('pulse');
-    msg.classList.add('in');toBottom();await sleep(120);
-    const txt=msg.querySelector(`.mt[data-mi="${i}"]`),cur=msg.querySelector(`.cursor[data-ci="${i}"]`);
+    const av=el.querySelector('.msg-av');if(av&&i>0)av.classList.add('pulse');
+    el.classList.add('in');toBottom();await sleep(120);
+    const txt=el.querySelector(`.mt[data-mi="${i}"]`),cur=el.querySelector(`.cursor[data-ci="${i}"]`);
     const ok=await typeEl(txt,script[i].text,tk,i===0?10:13);if(!ok)return;
     if(cur)cur.style.display='none';if(av)av.classList.remove('pulse');
     await sleep(250);
