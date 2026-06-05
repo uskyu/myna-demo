@@ -102,11 +102,12 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 @keyframes particleFlow{0%{left:-6px;opacity:0}20%{opacity:1}100%{left:100%;opacity:0}}
 
 /* ── Chat ── */
-.chat{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;
+.chat{flex:1;padding:14px 16px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;overflow-y:auto;
   scrollbar-width:thin;scrollbar-color:var(--sf3) transparent}
 .chat::-webkit-scrollbar{width:4px}
 .chat::-webkit-scrollbar-track{background:transparent}
 .chat::-webkit-scrollbar-thumb{background:var(--sf3);border-radius:4px}
+.chat-inner{display:flex;flex-direction:column;justify-content:flex-end;gap:8px}
 .chat-msg{display:flex;gap:10px;opacity:0;transform:translateY(14px) scale(.97);transition:.5s cubic-bezier(.22,1,.36,1)}
 .chat-msg.in{opacity:1;transform:translateY(0) scale(1)}
 .msg-av{width:32px;height:32px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
@@ -167,12 +168,6 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 .kicker{color:var(--cyan);font-family:var(--mono);font-size:11px;letter-spacing:.1em;
   text-transform:uppercase;margin-bottom:10px;font-weight:700}
 
-/* Right side: animated relay visualization */
-.flow-right{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;
-  transform:translateX(40px);opacity:0;transition:.8s cubic-bezier(.22,1,.36,1) .2s}
-.flow-right.entered{transform:translateX(0);opacity:1}
-
-/* Relay nodes animated */
 .relay-track{display:flex;flex-direction:column;gap:0;width:100%;max-width:420px}
 .relay-item{display:flex;align-items:stretch;gap:0;opacity:0;transform:translateX(30px);
   transition:.6s cubic-bezier(.22,1,.36,1)}
@@ -186,7 +181,6 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 .relay-rail .beam{position:absolute;left:-1px;width:5px;border-radius:3px;
   background:linear-gradient(180deg,var(--cyan),var(--violet));transition:.6s;height:0}
 .relay-rail .beam.full{height:100%}
-
 .relay-card{flex:1;padding:14px 16px;margin:8px 0 8px 16px;border-radius:14px;
   border:1px solid var(--bd);background:var(--sf);position:relative;overflow:hidden;transition:.4s}
 .relay-card.active{border-color:rgba(34,211,238,.3);box-shadow:0 0 30px rgba(34,211,238,.08)}
@@ -195,43 +189,65 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
 .relay-card p{color:var(--tx2);font-size:12.5px;line-height:1.5}
 .relay-card .mini-bubble{margin-top:6px;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.02);
   border:1px solid var(--bd);font-size:11px;color:var(--dim);font-family:var(--mono)}
-
-/* Arrow between relay items */
 .relay-arrow{display:flex;align-items:center;padding:2px 0 2px 18px;gap:6px;opacity:0;transition:.4s .1s}
 .relay-arrow.entered{opacity:1}
 .relay-arrow svg{width:14px;height:14px;color:var(--cyan)}
 .relay-arrow span{font-size:10px;font-family:var(--mono);color:var(--cyan);font-weight:700;
   padding:2px 8px;border-radius:4px;background:var(--cyan-soft)}
 
+.flow-right{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  transform:translateX(40px);opacity:0;transition:.8s cubic-bezier(.22,1,.36,1) .2s}
+.flow-right.entered{transform:translateX(0);opacity:1}
+
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PAGE 3: 核心能力 (DYNAMIC CARDS)
+   PAGE 3: 核心能力 (IMMERSIVE SHOWCASE)
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .feat-page .content{flex:1;display:flex;flex-direction:column;justify-content:center;
-  padding:40px clamp(16px,5vw,64px) 80px;max-width:1000px;margin:0 auto;width:100%}
-.feat-page h2{font-size:clamp(28px,4vw,48px);line-height:1;letter-spacing:-.04em;margin-bottom:24px}
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.feat-card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:20px;
-  transition:.5s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;
-  opacity:0;transform:translateY(30px) scale(.95)}
-.feat-card.entered{opacity:1;transform:translateY(0) scale(1)}
-.feat-card:hover{border-color:rgba(34,211,238,.3);transform:translateY(-3px) scale(1.02)!important}
-.feat-card .icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;margin-bottom:14px;border:1px solid var(--bd)}
-.feat-card h3{font-size:15px;margin-bottom:5px;letter-spacing:-.01em}
-.feat-card p{color:var(--tx2);font-size:12.5px;line-height:1.6}
-/* Active card glow */
-.feat-card.glow{box-shadow:0 0 40px rgba(34,211,238,.1)}
+  padding:40px clamp(16px,5vw,64px) 80px;max-width:1100px;margin:0 auto;width:100%}
+.feat-page h2{font-size:clamp(28px,4vw,48px);line-height:1;letter-spacing:-.04em;margin-bottom:8px;
+  opacity:0;transform:translateY(20px);transition:.6s}
+.feat-page h2.entered{opacity:1;transform:translateY(0)}
+
+/* Showcase area: one big stage with cards floating in */
+.feat-showcase{position:relative;width:100%;height:clamp(320px,45vh,520px);margin-top:16px;
+  perspective:1000px}
+.feat-card{position:absolute;background:var(--sf);border:1px solid var(--bd);border-radius:16px;
+  padding:22px 20px;width:clamp(180px,22vw,260px);transition:.7s cubic-bezier(.22,1,.36,1);
+  opacity:0;cursor:default;overflow:hidden}
+.feat-card.entered{opacity:1}
+.feat-card:hover{border-color:rgba(34,211,238,.35);transform:scale(1.06)!important;z-index:5;
+  box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.feat-card .icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;border:1px solid var(--bd)}
+.feat-card h3{font-size:16px;margin-bottom:6px;letter-spacing:-.01em}
+.feat-card p{color:var(--tx2);font-size:13px;line-height:1.6}
+.feat-card .demo-line{margin-top:10px;padding:6px 8px;border-radius:7px;font-family:var(--mono);
+  font-size:11px;color:var(--dim);background:rgba(255,255,255,.02);border:1px solid var(--bd);
+  opacity:0;transition:.4s}
+.feat-card .demo-line.entered{opacity:1}
+/* Glow pulse on entry */
+.feat-card.glow{box-shadow:0 0 40px rgba(34,211,238,.12)}
+
+/* Card positions (will be overridden by JS for responsive) */
+.feat-card[data-feat="0"]{top:0;left:2%}
+.feat-card[data-feat="1"]{top:0;left:38%}
+.feat-card[data-feat="2"]{top:0;right:2%}
+.feat-card[data-feat="3"]{bottom:0;left:8%}
+.feat-card[data-feat="4"]{bottom:0;left:44%}
+.feat-card[data-feat="5"]{bottom:0;right:4%}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    PAGE 4: CTA
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .cta-page .content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:40px clamp(16px,6vw,80px) 80px;text-align:center}
-.cta-panel{max-width:680px;border:1px solid rgba(34,211,238,.18);
+.cta-panel{max-width:720px;border:1px solid rgba(34,211,238,.18);
   background:linear-gradient(135deg,rgba(34,211,238,.05),rgba(167,139,250,.03));
-  border-radius:28px;padding:clamp(32px,5vw,56px);box-shadow:0 24px 80px rgba(0,0,0,.3)}
-.cta-panel h2{margin-bottom:14px;font-size:clamp(28px,4vw,48px);line-height:1.1;letter-spacing:-.04em}
-.cta-panel p{color:var(--tx2);font-size:16px;max-width:520px;margin:0 auto 24px;line-height:1.7}
-.cta-highlight{display:inline-block;white-space:nowrap;
+  border-radius:28px;padding:clamp(36px,5vw,64px);box-shadow:0 24px 80px rgba(0,0,0,.3);
+  opacity:0;transform:translateY(30px) scale(.96);transition:.8s cubic-bezier(.22,1,.36,1)}
+.cta-panel.entered{opacity:1;transform:translateY(0) scale(1)}
+.cta-panel h2{margin-bottom:16px;font-size:clamp(28px,4.5vw,52px);line-height:1.1;letter-spacing:-.04em}
+.cta-panel p{color:var(--tx2);font-size:17px;max-width:540px;margin:0 auto 28px;line-height:1.7}
+.cta-highlight{display:inline;white-space:nowrap;
   background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .btn-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
 .btn{border:1px solid var(--bd);background:var(--sf2);border-radius:999px;padding:10px 18px;
@@ -253,7 +269,10 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
   .flow-left{flex:0 0 auto;padding-right:0;transform:translateY(30px)}
   .flow-right{transform:translateY(30px)}
   .relay-track{max-width:100%}
-  .feat-grid{grid-template-columns:1fr 1fr}
+  .feat-showcase{height:auto;min-height:500px;perspective:none}
+  .feat-card{position:relative!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;
+    width:100%!important;margin-bottom:10px;transform:translateY(20px)!important}
+  .feat-card.entered{transform:translateY(0)!important}
   .chain-strip{padding:8px 12px}
   .chain-node{width:28px;height:28px;font-size:9px}
   .chain-line{width:16px}
@@ -261,7 +280,6 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
   .next-btn .key{display:none}
 }
 @media(max-width:480px){
-  .feat-grid{grid-template-columns:1fr}
   .brand .repo{display:none}
   .cta-panel h2{font-size:clamp(24px,7vw,36px)}
 }
@@ -306,7 +324,9 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
         <div class="chain-line" data-idx="3"></div>
         <div class="chain-node" data-idx="4" style="color:var(--violet)">OPS</div>
       </div>
-      <div class="chat" id="chatArea"></div>
+      <div class="chat" id="chatArea">
+        <div class="chat-inner" id="chatInner"></div>
+      </div>
     </div>
   </div>
   <button class="next-btn" onclick="document.getElementById('page2').scrollIntoView({behavior:'smooth'})">
@@ -327,7 +347,6 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
   </div>
   <div class="content">
     <div class="flow-split" id="flowSplit">
-      <!-- Left: Title + Summary -->
       <div class="flow-left" id="flowLeft">
         <div class="kicker">Relay Chain</div>
         <h2>不是聊天，<br>是接力</h2>
@@ -335,75 +354,17 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
           每个智能体有角色、模型、技能。用户说目标，Myna 自动串起来——分析、实现、复测、部署，一环扣一环。
         </p>
       </div>
-      <!-- Right: Animated relay track -->
       <div class="flow-right" id="flowRight">
         <div class="relay-track" id="relayTrack">
-          <!-- Step 1 -->
-          <div class="relay-item" data-relay="0">
-            <div class="relay-rail"><div class="dot"></div><div class="beam"></div></div>
-            <div class="relay-card">
-              <div class="step-label">STEP 01</div>
-              <h3>说出目标</h3>
-              <p>一句话描述要做什么，房间上下文自动保留</p>
-              <div class="mini-bubble">@产品经理 拆卖点，@前端 做页面</div>
-            </div>
-          </div>
-          <div class="relay-arrow" data-relay-arrow="0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            <span>handoff</span>
-          </div>
-          <!-- Step 2 -->
-          <div class="relay-item" data-relay="1">
-            <div class="relay-rail"><div class="dot"></div><div class="beam"></div></div>
-            <div class="relay-card">
-              <div class="step-label">STEP 02</div>
-              <h3>自动分工</h3>
-              <p>@谁谁就上，每个角色用最合适的模型</p>
-              <div class="mini-bubble">PM→Claude / FE→GPT-4o / QA→Gemini</div>
-            </div>
-          </div>
-          <div class="relay-arrow" data-relay-arrow="1">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            <span>handoff</span>
-          </div>
-          <!-- Step 3 -->
-          <div class="relay-item" data-relay="2">
-            <div class="relay-rail"><div class="dot"></div><div class="beam"></div></div>
-            <div class="relay-card">
-              <div class="step-label">STEP 03</div>
-              <h3>交接接力</h3>
-              <p>完成后自动传递上下文，链深度可见</p>
-              <div class="mini-bubble">⟶ PM→FE (需求+结构+卖点)</div>
-            </div>
-          </div>
-          <div class="relay-arrow" data-relay-arrow="2">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            <span>handoff</span>
-          </div>
-          <!-- Step 4 -->
-          <div class="relay-item" data-relay="3">
-            <div class="relay-rail"><div class="dot"></div><div class="beam"></div></div>
-            <div class="relay-card">
-              <div class="step-label">STEP 04</div>
-              <h3>工具执行可见</h3>
-              <p>终端命令、浏览器操作、文件读写实时展示</p>
-              <div class="mini-bubble">$ npm run build ✓ / browser→click ✓</div>
-            </div>
-          </div>
-          <div class="relay-arrow" data-relay-arrow="3">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            <span>handoff</span>
-          </div>
-          <!-- Step 5 -->
-          <div class="relay-item" data-relay="4">
-            <div class="relay-rail"><div class="dot"></div><div class="beam"></div></div>
-            <div class="relay-card">
-              <div class="step-label">STEP 05</div>
-              <h3>产物沉淀</h3>
-              <p>代码、文档、截图、日志留在共享工作空间</p>
-              <div class="mini-bubble">📦 index.html · screenshot.png · deploy.log</div>
-            </div>
-          </div>
+          <div class="relay-item" data-relay="0"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 01</div><h3>说出目标</h3><p>一句话描述要做什么，房间上下文自动保留</p><div class="mini-bubble">@产品经理 拆卖点，@前端 做页面</div></div></div>
+          <div class="relay-arrow" data-relay-arrow="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="relay-item" data-relay="1"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 02</div><h3>自动分工</h3><p>@谁谁就上，每个角色用最合适的模型</p><div class="mini-bubble">PM→Claude / FE→GPT-4o / QA→Gemini</div></div></div>
+          <div class="relay-arrow" data-relay-arrow="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="relay-item" data-relay="2"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 03</div><h3>交接接力</h3><p>完成后自动传递上下文，链深度可见</p><div class="mini-bubble">⟶ PM→FE (需求+结构+卖点)</div></div></div>
+          <div class="relay-arrow" data-relay-arrow="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="relay-item" data-relay="3"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 04</div><h3>工具执行可见</h3><p>终端命令、浏览器操作、文件读写实时展示</p><div class="mini-bubble">$ npm run build ✓ / browser→click ✓</div></div></div>
+          <div class="relay-arrow" data-relay-arrow="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span>handoff</span></div>
+          <div class="relay-item" data-relay="4"><div class="relay-rail"><div class="dot"></div><div class="beam"></div></div><div class="relay-card"><div class="step-label">STEP 05</div><h3>产物沉淀</h3><p>代码、文档、截图、日志留在共享工作空间</p><div class="mini-bubble">📦 index.html · screenshot.png · deploy.log</div></div></div>
         </div>
       </div>
     </div>
@@ -414,7 +375,7 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
   </button>
 </div>
 
-<!-- ════════ PAGE 3: 核心能力 (DYNAMIC) ════════ -->
+<!-- ════════ PAGE 3: 核心能力 (IMMERSIVE SHOWCASE) ════════ -->
 <div class="page feat-page" id="page3">
   <div class="topbar">
     <div class="brand">
@@ -426,14 +387,50 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
   </div>
   <div class="content">
     <div class="kicker">Core Capabilities</div>
-    <h2>为什么不是又一个聊天框</h2>
-    <div class="feat-grid" id="featGrid">
-      <div class="feat-card" data-feat="0"><div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 0 0-10 0v2a5 5 0 0 0 10 0V8Z"/><path d="M7 10H4"/><path d="M20 10h-3"/><path d="M12 15v6"/></svg></div><h3>群聊式协作</h3><p>一个房间 = 一个任务现场，所有 Agent 围绕同一目标</p></div>
-      <div class="feat-card" data-feat="1"><div class="icon" style="background:var(--green-soft);color:var(--green);border-color:rgba(74,222,128,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div><h3>@精确分工</h3><p>需要谁就 @ 谁，不同角色绑定不同模型和工具</p></div>
-      <div class="feat-card" data-feat="2"><div class="icon" style="background:var(--violet-soft);color:var(--violet);border-color:rgba(167,139,250,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10"/><path d="m10 3 4 4-4 4"/><path d="M20 17H10"/><path d="m14 13-4 4 4 4"/></svg></div><h3>自动交接</h3><p>完成后自动传递上下文，链深度可见不是黑盒</p></div>
-      <div class="feat-card" data-feat="3"><div class="icon" style="background:var(--amber-soft);color:var(--amber);border-color:rgba(251,191,36,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div><h3>终端 & 浏览器</h3><p>真实命令执行、浏览器操作，不是假装的</p></div>
-      <div class="feat-card" data-feat="4"><div class="icon" style="background:var(--rose-soft);color:var(--rose);border-color:rgba(251,113,133,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v6c0 5 3.4 7.5 8 8 4.6-.5 8-3 8-8V7l-8-4Z"/><path d="m9 12 2 2 4-5"/></svg></div><h3>审批机制</h3><p>auto / confirm / manual 三档，危险操作可拦截</p></div>
-      <div class="feat-card" data-feat="5"><div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 20V9"/></svg></div><h3>技能沉淀</h3><p>稳定流程保存为技能，下次直接加载越用越强</p></div>
+    <h2 id="featTitle">为什么不是又一个聊天框</h2>
+    <div class="feat-showcase" id="featShowcase">
+      <!-- Card 0: 群聊式协作 -->
+      <div class="feat-card" data-feat="0">
+        <div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 0 0-10 0v2a5 5 0 0 0 10 0V8Z"/><path d="M7 10H4"/><path d="M20 10h-3"/><path d="M12 15v6"/></svg></div>
+        <h3>群聊式协作</h3>
+        <p>一个房间 = 一个任务现场，所有 Agent 围绕同一目标</p>
+        <div class="demo-line">@前端 @测试员 做完了吗？</div>
+      </div>
+      <!-- Card 1: @精确分工 -->
+      <div class="feat-card" data-feat="1">
+        <div class="icon" style="background:var(--green-soft);color:var(--green);border-color:rgba(74,222,128,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div>
+        <h3>@精确分工</h3>
+        <p>需要谁就 @ 谁，不同角色绑定不同模型和工具</p>
+        <div class="demo-line">PM→Claude / FE→GPT-4o</div>
+      </div>
+      <!-- Card 2: 自动交接 -->
+      <div class="feat-card" data-feat="2">
+        <div class="icon" style="background:var(--violet-soft);color:var(--violet);border-color:rgba(167,139,250,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10"/><path d="m10 3 4 4-4 4"/><path d="M20 17H10"/><path d="m14 13-4 4 4 4"/></svg></div>
+        <h3>自动交接</h3>
+        <p>完成后自动传递上下文，链深度可见不是黑盒</p>
+        <div class="demo-line">⟶ handoff: PM→FE (需求)</div>
+      </div>
+      <!-- Card 3: 终端 & 浏览器 -->
+      <div class="feat-card" data-feat="3">
+        <div class="icon" style="background:var(--amber-soft);color:var(--amber);border-color:rgba(251,191,36,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
+        <h3>终端 & 浏览器</h3>
+        <p>真实命令执行、浏览器操作，不是假装的</p>
+        <div class="demo-line">$ npm run build ✓</div>
+      </div>
+      <!-- Card 4: 审批机制 -->
+      <div class="feat-card" data-feat="4">
+        <div class="icon" style="background:var(--rose-soft);color:var(--rose);border-color:rgba(251,113,133,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v6c0 5 3.4 7.5 8 8 4.6-.5 8-3 8-8V7l-8-4Z"/><path d="m9 12 2 2 4-5"/></svg></div>
+        <h3>审批机制</h3>
+        <p>auto / confirm / manual 三档，危险操作可拦截</p>
+        <div class="demo-line">⚠️ rm -rf → 需要确认</div>
+      </div>
+      <!-- Card 5: 技能沉淀 -->
+      <div class="feat-card" data-feat="5">
+        <div class="icon" style="background:var(--cyan-soft);color:var(--cyan);border-color:rgba(34,211,238,.2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 20V9"/></svg></div>
+        <h3>技能沉淀</h3>
+        <p>稳定流程保存为技能，下次直接加载越用越强</p>
+        <div class="demo-line">📋 已加载: 前端验收流程</div>
+      </div>
     </div>
   </div>
   <button class="next-btn" onclick="document.getElementById('page4').scrollIntoView({behavior:'smooth'})">
@@ -453,9 +450,9 @@ body{color:var(--tx);font-family:var(--font);line-height:1.6;overflow-x:hidden;-
     <span class="page-indicator">4 / 4</span>
   </div>
   <div class="content">
-    <div class="cta-panel">
-      <h2>把多个 AI 变成<br><span class="cta-highlight">接力团队</span></h2>
-      <p>私有部署，真实工具执行，记忆和技能可复用。开发、测试、运维 Agent 在一个房间接力干活。</p>
+    <div class="cta-panel" id="ctaPanel">
+      <h2>多个 AI，<span class="cta-highlight">一个团队</span></h2>
+      <p>@分工，自动交接，工具可见。私有部署，记忆和技能可复用——让 AI 像真正的团队一样协作，而不是各说各话。</p>
       <div class="btn-row">
         <a class="btn primary" href="https://github.com/uskyu/Myna" target="_blank">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.337-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10Z"/></svg>
@@ -511,11 +508,10 @@ const script=[
 ];
 
 let runToken=0;
-// Track if user manually scrolled the chat
 let userScrolledChat=false;
 const chatArea=$('#chatArea');
 
-// Auto-scroll: detect user manual scroll
+// Detect manual scroll
 chatArea.addEventListener('scroll',()=>{
   const atBottom=chatArea.scrollHeight-chatArea.scrollTop-chatArea.clientHeight<40;
   userScrolledChat=!atBottom;
@@ -523,7 +519,7 @@ chatArea.addEventListener('scroll',()=>{
 
 function scrollChatToBottom(){
   if(!userScrolledChat){
-    chatArea.scrollTo({top:chatArea.scrollHeight,behavior:'smooth'});
+    chatArea.scrollTop=chatArea.scrollHeight;
   }
 }
 
@@ -573,14 +569,17 @@ async function animHO(i,tk){
 }
 
 async function play(){
-  const tk=++runToken;const area=$('#chatArea');area.innerHTML='';
-  userScrolledChat=false; // reset on replay
+  const tk=++runToken;
+  const inner=$('#chatInner');inner.innerHTML='';
+  userScrolledChat=false;
   $$('.chain-node').forEach(n=>n.classList.remove('lit'));
   $$('.chain-line').forEach(l=>l.classList.remove('lit'));
+  // Scroll to bottom immediately
+  chatArea.scrollTop=0;
   await sleep(200);
-  script.forEach((item,i)=>{const el=mkMsg(item,i);area.appendChild(el)});
+  script.forEach((item,i)=>{const el=mkMsg(item,i);inner.appendChild(el)});
   for(let i=0;i<script.length;i++){
-    if(tk!==runToken)return;const item=script[i];const msg=area.querySelector(`.chat-msg[data-idx="${i}"]`);
+    if(tk!==runToken)return;const item=script[i];const msg=inner.querySelector(`.chat-msg[data-idx="${i}"]`);
     const nodes=$$('.chain-node'),lines=$$('.chain-line');
     nodes.forEach(n=>n.classList.remove('lit'));
     if(i<nodes.length)nodes[i].classList.add('lit');
@@ -600,58 +599,81 @@ async function play(){
 $('#btnReplay').addEventListener('click',play);
 
 // ═══════════════════════════════════════
-// PAGE 2: RELAY ANIMATION (scroll-triggered)
+// PAGE 2: RELAY ANIMATION
 // ═══════════════════════════════════════
 let flowAnimated=false;
 async function animateFlow(){
   if(flowAnimated)return;flowAnimated=true;
-  // Slide in left and right
   $('#flowLeft').classList.add('entered');
   $('#flowRight').classList.add('entered');
   await sleep(400);
-  // Animate relay items one by one
   const items=$$('.relay-item');
   const arrows=$$('.relay-arrow');
   for(let i=0;i<items.length;i++){
     const item=items[i];
     item.classList.add('entered');
-    // Activate dot
     const dot=item.querySelector('.relay-rail .dot');
     if(dot)dot.classList.add('active');
-    // Activate card
     const card=item.querySelector('.relay-card');
     if(card)card.classList.add('active');
-    // Beam fill for previous rail
-    if(i>0){
-      const prevBeam=items[i-1].querySelector('.relay-rail .beam');
-      if(prevBeam)prevBeam.classList.add('full');
-    }
+    if(i>0){const prevBeam=items[i-1].querySelector('.relay-rail .beam');if(prevBeam)prevBeam.classList.add('full')}
     await sleep(300);
-    // Show arrow
-    if(i<arrows.length){
-      arrows[i].classList.add('entered');
-      await sleep(200);
-    }
+    if(i<arrows.length){arrows[i].classList.add('entered');await sleep(200)}
   }
-  // Fill last beam
   const lastBeam=items[items.length-1].querySelector('.relay-rail .beam');
   if(lastBeam)lastBeam.classList.add('full');
 }
 
 // ═══════════════════════════════════════
-// PAGE 3: FEATURE CARDS (stagger entrance)
+// PAGE 3: FEATURE CARDS — IMMERSIVE SHOWCASE
+// Cards fly in from different directions, then demo-line appears
 // ═══════════════════════════════════════
 let featAnimated=false;
+
+// Define fly-in transforms per card
+const featTransforms=[
+  {start:'translate(-120px, -60px) rotate(-8deg)',end:'translate(0,0) rotate(0deg)'},
+  {start:'translate(0, -100px) rotate(3deg)',end:'translate(0,0) rotate(0deg)'},
+  {start:'translate(120px, -60px) rotate(6deg)',end:'translate(0,0) rotate(0deg)'},
+  {start:'translate(-100px, 60px) rotate(5deg)',end:'translate(0,0) rotate(0deg)'},
+  {start:'translate(0, 100px) rotate(-4deg)',end:'translate(0,0) rotate(0deg)'},
+  {start:'translate(100px, 60px) rotate(-7deg)',end:'translate(0,0) rotate(0deg)'},
+];
+
 async function animateFeats(){
   if(featAnimated)return;featAnimated=true;
+  // Title fade in
+  $('#featTitle').classList.add('entered');
+  await sleep(300);
+  // Cards fly in one by one
   const cards=$$('.feat-card');
   for(let i=0;i<cards.length;i++){
-    await sleep(100);
-    cards[i].classList.add('entered');
+    const card=cards[i];
+    const t=featTransforms[i];
+    // Set initial transform
+    card.style.transform=t.start;
+    await sleep(80);
+    // Animate to final position
+    card.classList.add('entered');
+    card.style.transform=t.end;
     // Brief glow
-    setTimeout(()=>{cards[i].classList.add('glow')},200);
-    setTimeout(()=>{cards[i].classList.remove('glow')},800);
+    card.classList.add('glow');
+    setTimeout(()=>card.classList.remove('glow'),600);
+    await sleep(150);
+    // Show demo-line
+    const dl=card.querySelector('.demo-line');
+    if(dl)dl.classList.add('entered');
+    await sleep(100);
   }
+}
+
+// ═══════════════════════════════════════
+// PAGE 4: CTA fade in
+// ═══════════════════════════════════════
+let ctaAnimated=false;
+function animateCta(){
+  if(ctaAnimated)return;ctaAnimated=true;
+  $('#ctaPanel').classList.add('entered');
 }
 
 // ═══════════════════════════════════════
@@ -663,11 +685,13 @@ const pageIO=new IntersectionObserver(entries=>{
       const id=e.target.id;
       if(id==='page2')animateFlow();
       if(id==='page3')animateFeats();
+      if(id==='page4')animateCta();
     }
   });
-},{threshold:.35});
+},{threshold:.3});
 pageIO.observe($('#page2'));
 pageIO.observe($('#page3'));
+pageIO.observe($('#page4'));
 
 // ═══════════════════════════════════════
 // KEYBOARD NAV
