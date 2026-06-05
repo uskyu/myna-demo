@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Myna 演示片场 — 群聊式 AI 协作一镜到底</title>
-  <meta name="description" content="Myna 群聊式 AI 协作演示页：@分工、自动接力、共享工作空间、工具执行可见，适合录制产品视频。" />
+  <title>Myna — 群聊式 AI 协作平台</title>
+  <meta name="description" content="Myna 群聊式 AI 协作平台：@分工、自动接力、共享工作空间、工具执行可见。" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -187,33 +187,33 @@
   <div class="page">
     <nav class="nav">
       <a class="brand" href="#top" aria-label="Myna 演示首页">
-        <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3v18"/><path d="M5 8h7a4 4 0 0 1 0 8H5"/><path d="M12 8h7"/><path d="M12 16h7"/></svg></span>
-        <span>Myna Demo Studio</span>
+        <span class="brand-mark bird-logo"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M12 34c4-15 16-24 34-23-3 3-4 7-2 11 5 1 8 4 9 8-5-2-10-1-14 2-5 4-9 10-17 10-5 0-8-3-10-8Z" fill="currentColor"/><path d="M18 40c3 9 12 12 25 8-8 8-22 10-31 3 4-2 6-5 6-11Z" fill="currentColor" opacity=".72"/><circle cx="38" cy="22" r="2.4" fill="#0f0e0c"/><path d="M46 22l8-3-5 7" fill="currentColor"/></svg></span>
+        <span>Myna</span>
       </a>
       <div class="nav-links">
-        <a href="#flow">接力流程</a><a href="#ui">电脑手机</a><a href="#admin">后台能力</a><a href="#shot">录制脚本</a>
+        <a href="#flow">接力流程</a><a href="#ui">电脑手机</a><a href="#admin">后台能力</a><a href="#evolve">自主进化</a>
       </div>
     </nav>
 
     <header class="hero" id="top">
       <div>
-        <div class="eyebrow"><span class="live-dot"></span><span>一镜到底演示页</span></div>
+        <div class="eyebrow"><span class="live-dot"></span><span>群聊式 AI 协作</span></div>
         <h1>把 AI 协作做成一个<span>群聊房间</span></h1>
         <p class="hero-sub">Myna 让多个智能体在同一个房间里接力干活。用户只要描述目标，按需 @ 分工，过程、文件、命令、测试和结果全部可见。</p>
         <div class="hero-actions">
-          <button class="btn primary" id="replayTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>重新播放首屏</button>
-          <a class="btn" href="#shot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg>查看录屏脚本</a>
+          <button class="btn primary" id="replayTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>播放协作过程</button>
+          <a class="btn" href="#flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg>查看核心能力</a>
         </div>
       </div>
 
       <div class="stage" aria-label="Myna 自动协作演示">
         <div class="stage-top"><div class="traffic"><i></i><i></i><i></i></div><div class="stage-title">room://产品发布作战室</div></div>
         <div class="story" id="story">
-          <div class="chat-row" data-step="0"><div class="avatar user">我</div><div class="bubble"><strong>用户</strong><p>今晚要发一个产品介绍视频，<span class="mention">@产品经理</span> 拆卖点，<span class="mention">@前端</span> 做演示页，<span class="mention">@测试员</span> 复测，<span class="mention">@运维</span> 给公网链接。</p></div></div>
-          <div class="chat-row" data-step="1"><div class="avatar">PM</div><div class="bubble"><strong>产品经理</strong><p class="type-target" data-text="核心卖点确定：群聊式协作、@分工、自动接力、共享工作空间、工具执行透明。页面按视频镜头组织，每屏只讲一个点。"></p></div></div>
-          <div class="chat-row" data-step="2"><div class="avatar">FE</div><div class="bubble"><strong>前端工程师</strong><p>收到。生成一镜到底长页面，桌面大屏展示协作房间，右侧同步放手机预览，颜色使用 Myna 暖黑、森林绿、琥珀。</p></div></div>
-          <div class="chat-row" data-step="3"><div class="avatar">QA</div><div class="bubble"><strong>测试员</strong><p>开始复测关键路径：桌面布局、手机布局、动画播放、控制台错误、录屏可读性。</p><div class="tool-grid"><div class="tool-card" data-tool="0"><div class="k"><span class="spin"></span>浏览器实测</div><div class="v">desktop 1440px</div></div><div class="tool-card" data-tool="1"><div class="k"><span class="spin"></span>移动端检查</div><div class="v">mobile 390px</div></div><div class="tool-card" data-tool="2"><div class="k"><span class="spin"></span>部署预览</div><div class="v">public link ready</div></div></div></div></div>
-          <div class="chat-row" data-step="4"><div class="avatar">OPS</div><div class="bubble"><strong>运维</strong><p>演示页可独立托管，不影响真实 Myna 服务。录视频直接打开公网链接，从上往下滚动即可。</p></div></div>
+          <div class="chat-row" data-step="0"><div class="avatar user">我</div><div class="bubble"><strong>用户</strong><p>我要做一个产品官网改版，<span class="mention">@产品经理</span> 拆卖点，<span class="mention">@前端</span> 做产品页面，<span class="mention">@测试员</span> 复测，<span class="mention">@运维</span> 检查部署结果。</p></div></div>
+          <div class="chat-row" data-step="1"><div class="avatar">PM</div><div class="bubble"><strong>产品经理</strong><p class="type-target" data-text="需求已拆解：先明确页面结构和核心卖点，再交给前端实现，最后由测试员复测真实页面。"></p></div></div>
+          <div class="chat-row" data-step="2"><div class="avatar">FE</div><div class="bubble"><strong>前端工程师</strong><p>收到。开始修改前端页面，同步更新桌面和移动端布局，代码产物直接进入共享工作空间。</p></div></div>
+          <div class="chat-row" data-step="3"><div class="avatar">QA</div><div class="bubble"><strong>测试员</strong><p>开始复测关键路径：桌面布局、手机布局、交互点击、控制台错误和构建结果。</p><div class="tool-grid"><div class="tool-card" data-tool="0"><div class="k"><span class="spin"></span>浏览器实测</div><div class="v">真实浏览器打开</div></div><div class="tool-card" data-tool="1"><div class="k"><span class="spin"></span>移动端检查</div><div class="v">移动端响应式</div></div><div class="tool-card" data-tool="2"><div class="k"><span class="spin"></span>部署检查</div><div class="v">服务状态正常</div></div></div></div></div>
+          <div class="chat-row" data-step="4"><div class="avatar">OPS</div><div class="bubble"><strong>运维</strong><p>部署状态已检查，页面可访问，测试结果和截图已沉淀在同一个房间。</p></div></div>
         </div>
       </div>
     </header>
@@ -230,7 +230,7 @@
     </section>
 
     <section>
-      <div class="section-head reveal"><div class="kicker">What to show</div><h2>视频里 5 秒就能看懂的功能点</h2><p>把复杂多智能体能力压缩成几个可视化模块，适合短视频快速扫过。</p></div>
+      <div class="section-head reveal"><div class="kicker">Core Features</div><h2>用户一眼能看懂的核心能力</h2><p>把复杂多智能体协作变成可见、可控、可复用的工作流。</p></div>
       <div class="feature-grid">
         <div class="feature-card reveal"><div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 0 0-10 0v2a5 5 0 0 0 10 0V8Z"/><path d="M7 10H4"/><path d="M20 10h-3"/><path d="M12 15v6"/></svg></div><h3>群聊式协作</h3><p>每个房间就是一个任务现场，所有智能体围绕同一目标工作。</p></div>
         <div class="feature-card reveal"><div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></div><h3>@精确分工</h3><p>需要谁就 @ 谁，避免所有模型一起乱跑。</p></div>
@@ -240,15 +240,15 @@
     </section>
 
     <section id="ui">
-      <div class="section-head reveal"><div class="kicker">Desktop and Mobile</div><h2>电脑适合录全流程，手机适合展示真实使用感</h2><p>同一套产品能力，在桌面端看清工作台，在手机端看清群聊体验。</p></div>
+      <div class="section-head reveal"><div class="kicker">Real Product UI</div><h2>电脑适合录全流程，手机适合展示真实使用感</h2><p>同一套产品能力，在桌面端看清工作台，在手机端看清群聊体验。</p></div>
       <div class="cinema">
-        <div class="desktop-frame reveal"><div class="frame-head"><span>Myna Desktop Workspace</span><span>共享工作空间已连接</span></div><div class="app-ui"><aside class="sidebar"><div class="room active"><span class="room-dot"></span><span>产品发布作战室</span></div><div class="room"><span class="room-dot"></span><span>代码修复小组</span></div><div class="room"><span class="room-dot"></span><span>运营内容工厂</span></div></aside><main class="chat-main"><div class="msg me">@全员 做一个能直接录视频的演示页。</div><div class="msg">产品经理：先拆镜头，每屏只讲一个卖点。</div><div class="msg">前端：页面已生成，自动动画和移动端布局同步处理。</div><div class="msg">测试员：桌面、手机、控制台、截图全部复测。</div><div class="workspace"><div class="file">index.html</div><div class="file">demo-shot.png</div><div class="file">deploy.log</div></div></main><aside class="inspector"><div class="agent-pill"><span>产品经理</span><b>online</b></div><div class="agent-pill"><span>前端工程师</span><b>coding</b></div><div class="agent-pill"><span>测试员</span><b>review</b></div><div class="agent-pill"><span>运维</span><b>ready</b></div></aside></div></div>
+        <div class="desktop-frame reveal"><div class="frame-head"><span>Myna Desktop Workspace</span><span>共享工作空间已连接</span></div><div class="app-ui"><aside class="sidebar"><div class="room active"><span class="room-dot"></span><span>产品发布作战室</span></div><div class="room"><span class="room-dot"></span><span>代码修复小组</span></div><div class="room"><span class="room-dot"></span><span>运营内容工厂</span></div></aside><main class="chat-main"><div class="msg me">@全员 做一个产品官网改版。</div><div class="msg">产品经理：先拆页面结构、目标用户和卖点。</div><div class="msg">前端：页面已修改，桌面和移动端布局同步处理。</div><div class="msg">测试员：桌面、手机、控制台和构建全部复测。</div><div class="workspace"><div class="file">index.html</div><div class="file">browser-check.png</div><div class="file">deploy.log</div></div></main><aside class="inspector"><div class="agent-pill"><span>产品经理</span><b>online</b></div><div class="agent-pill"><span>前端工程师</span><b>coding</b></div><div class="agent-pill"><span>测试员</span><b>review</b></div><div class="agent-pill"><span>运维</span><b>ready</b></div></aside></div></div>
         <div class="phone-frame reveal"><div class="phone-screen"><div class="phone-top"><strong>Myna</strong><span style="color:var(--accent-strong);font-family:var(--mono);font-size:12px">LIVE</span></div><div class="phone-list"><div class="phone-card"><h4>产品发布作战室</h4><p>@测试员 已完成移动端复测</p></div><div class="phone-card"><h4>共享工作空间</h4><p>新增 3 个文件，1 张截图</p></div><div class="phone-card"><h4>自动接力规则</h4><p>开发完成后自动转测试</p></div><div class="phone-card"><h4>技能库</h4><p>已加载前端验收流程</p></div></div></div></div>
       </div>
     </section>
 
     <section id="admin">
-      <div class="section-head reveal"><div class="kicker">Admin Center</div><h2>演示页要把后台能力也带出来</h2><p>视频不是只拍聊天框。Myna 的价值在于能配置模型、角色、技能和系统能力，形成可复用团队。</p></div>
+      <div class="section-head reveal"><div class="kicker">Control Center</div><h2>后台把 AI 团队真正管起来</h2><p>Myna 不只是聊天界面。模型、角色、技能、审批和工具权限都能配置，形成可复用的 AI 团队。</p></div>
       <div class="admin-grid">
         <div class="admin-panel reveal"><h3><span class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M2 12h20"/></svg></span>模型配置</h3><div class="line"><span style="width:82%"></span></div><p style="color:var(--text-2);font-size:14px">不同角色绑定不同模型，成本和能力分层。</p></div>
         <div class="admin-panel reveal"><h3><span class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a7 7 0 0 1 13 0"/></svg></span>智能体配置</h3><div class="line"><span style="width:68%"></span></div><p style="color:var(--text-2);font-size:14px">角色目标、系统提示词、工具权限集中管理。</p></div>
@@ -257,16 +257,15 @@
       </div>
     </section>
 
-    <section id="shot">
-      <div class="section-head reveal"><div class="kicker">Shot Plan</div><h2>录视频按这个顺序，一镜到底</h2><p>打开页面，从首屏开始慢慢向下滚。每个镜头一句话讲清楚，不需要解释复杂概念。</p></div>
+    <section id="evolve">
+      <div class="section-head reveal"><div class="kicker">Self Improving Team</div><h2>越用越像自己的 AI 团队</h2><p>多步操作可以沉淀成技能，房间保留上下文，智能体保留自己的记忆和工具配置。下次遇到同类任务，不用从零开始。</p></div>
       <div class="script-wrap">
-        <div class="script-card reveal"><ol><li>开场停 3 秒：这是一个群聊式 AI 协作房间。</li><li>等首屏动画跑完：展示 @分工 和自动接力。</li><li>滚到流程区：一句话说明从需求到部署检查。</li><li>滚到电脑手机区：展示桌面工作台和手机群聊体验。</li><li>滚到后台区：展示模型、智能体、技能库都能配置。</li><li>结尾：自部署、可控、能沉淀自己的 AI 团队。</li></ol></div>
-        <div class="script-card reveal"><h3 style="margin-bottom:14px">推荐口播</h3><p style="color:var(--text-2);font-size:17px">“Myna 不是让你和一个 AI 单聊，而是把多个 AI 放进同一个工作房间。你可以 @产品经理拆需求，@前端写页面，@测试员复测，@运维发链接。过程、文件、命令、测试结果都在一个房间里，适合个人和小团队把 AI 真正用起来。”</p></div>
+        <div class="script-card reveal"><ol><li>房间保存目标、上下文、文件和执行结果。</li><li>智能体按角色分工，使用独立模型、技能和工具权限。</li><li>复杂任务完成后，稳定流程可以沉淀为技能。</li><li>审批机制支持 auto、confirm、manual 三档执行模式。</li><li>WebSocket 实时推送，工具调用过程可见，不是黑盒。</li><li>Docker 和 Windows 便携版都能部署，数据目录可持久化。</li></ol></div>
+        <div class="script-card reveal"><h3 style="margin-bottom:14px">典型场景</h3><p style="color:var(--text-2);font-size:17px">开发任务、服务器运维、内容生产、资料整理、网页测试，都可以放进一个群聊房间。用户负责定目标，智能体负责接力执行，关键步骤可审批，最终产物沉淀到共享工作空间。</p></div>
       </div>
     </section>
-
     <section class="final-cta">
-      <div class="panel reveal"><h2>把演示页当成产品片场</h2><p>这个页面专门为录屏服务。它不泄露真实业务数据，也不依赖后端，适合托管到 GitHub Pages 后直接发给别人看。</p><button class="btn primary" id="replayBottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>回到顶部重新播放</button></div>
+      <div class="panel reveal"><h2>把多个 AI 变成一支可复用团队</h2><p>Myna 支持私有部署，基于 Hermes Agent，保留记忆、技能和真实工具执行。你可以把开发、测试、审查、运维 Agent 拉进一个房间，让它们围绕同一个目标接力干活。</p><button class="btn primary" id="replayBottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>重新播放协作过程</button></div>
     </section>
   </div>
 
