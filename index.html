@@ -302,7 +302,7 @@ let runToken=0, userScrolled=false;
 const chatEl=$('#chatArea');
 chatEl.addEventListener('scroll',()=>{userScrolled=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight>40});
 
-function toBottom(){if(!userScrolled){chatEl.scrollTop=chatEl.scrollHeight}}
+function toBottom(){if(!userScrolled){requestAnimationFrame(()=>{chatEl.scrollTo({top:chatEl.scrollHeight,behavior:'instant'})})}}
 
 function mkMsg(item,i){
   const el=document.createElement('div');el.className='chat-msg';el.dataset.idx=i;
